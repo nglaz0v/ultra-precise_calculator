@@ -42,7 +42,7 @@ int main()
     } while (!input);
     Value::exactness = static_cast<unsigned int>(val);
 #if 1
-    while(1) {
+    while (true) {
         std::cout << "\nEnter calculated expression: " << std::endl;
         std::cin >> str;
         if (str == "exit") break;

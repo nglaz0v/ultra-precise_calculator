@@ -164,6 +164,7 @@ Verylong operator + (const Verylong &u,const Verylong &v)
       else               return v-abs(u);
     }
 
+    string tmp(temp);
     for(j=u.vlstr.rbegin(),  k=v.vlstr.rbegin();
         j!=u.vlstr.rend() || k!=v.vlstr.rend();)
     {
@@ -172,8 +173,9 @@ Verylong operator + (const Verylong &u,const Verylong &v)
       digitsum = d1 + d2 + carry;                  // add digits
       carry = (digitsum >= 10) ? 1 : 0;
       digitsum -= 10*carry;
-      temp = char(digitsum+'0') + temp;
+      tmp += char(digitsum+'0');
     }
+    temp.assign(tmp.rbegin(), tmp.rend());
     if(carry) temp = '1' + temp;  // if carry at end, last digit is 1
     if(u.vlsign) temp = '-' + temp;
     return Verylong(temp);
@@ -198,6 +200,7 @@ Verylong operator - (const Verylong &u,const Verylong &v)
      if(u<v) { w=u; y=v; negative=1;}
      else    { w=v; y=u; negative=0;}
 
+    string tmp(temp);
     for(i=w.vlstr.rbegin(),  j=y.vlstr.rbegin();
         i!=w.vlstr.rend() || j!=y.vlstr.rend();)
     {
@@ -206,8 +209,9 @@ Verylong operator - (const Verylong &u,const Verylong &v)
       d = d1 - d2 - borrow;
       borrow = (d < 0) ? 1 : 0;
       d += 10 * borrow;
-      temp = char(d+'0') + temp;
+      tmp += char(d+'0');
     }
+    temp.assign(tmp.rbegin(), tmp.rend());
 
     while(temp[0] == '0') temp = temp.substr(1);
     if(negative) temp = '-' + temp;
@@ -347,8 +351,8 @@ Verylong sqrt(const Verylong &v)
        --z;
        digitsum = -y*z.mult10(1) + tempsum - z*z;
      }
-     temp = temp + char(int(z) + '0');// store partial result
-     z = sum = sum.mult10(1) + z;     // update value of the partial result
+     temp += char(int(z) + '0');    // store partial result
+     z = sum = sum.mult10(1) + z;   // update value of the partial result
    }
    Verylong result(temp);
    return result;
@@ -453,6 +457,7 @@ Verylong Verylong::multdigit(int num) const
     if(num)
     {
       string temp;
+      string tmp(temp);
       for(r=vlstr.rbegin();r!=vlstr.rend();r++)
       {
         int d1 = *r - '0',               // get digit and multiplied by
@@ -463,11 +468,12 @@ Verylong Verylong::multdigit(int num) const
           digitprod -= carry*10;         // result is low digit
         }
         else carry = 0;                  // otherwise carry is 0
-        temp = char(digitprod + '0') + temp;   // insert char in string
-       }
-       if(carry) temp = char(carry + '0') + temp; //if carry at end,
-       Verylong result(temp);
-       return result;
+        tmp += char(digitprod + '0');    // insert char in string
+      }
+      temp.assign(tmp.rbegin(), tmp.rend());
+      if(carry) temp = char(carry + '0') + temp; //if carry at end,
+      Verylong result(temp);
+      return result;
    }
    else return zero;
 }
@@ -478,7 +484,7 @@ Verylong Verylong::mult10(int num) const
     if(*this != zero)
     {
       string temp;
-      for(int j=0;j<num;j++) temp = temp + '0';
+      for(int j=0;j<num;j++) temp += '0';
       Verylong result(vlstr+temp);
       if(vlsign) result = -result;
       return result;
@@ -486,8 +492,8 @@ Verylong Verylong::mult10(int num) const
     else return zero;
 }
 
-template <> Verylong zero(Verylong) { return Verylong::zero; }
-template <> Verylong one(Verylong) { return Verylong::one; }
+//template <> Verylong zero(Verylong) { return Verylong::zero; }
+//template <> Verylong one(Verylong) { return Verylong::one; }
 
 //#undef LIBSYMBOLICCPLUSPLUS
 //template <> Verylong zero(Verylong);
