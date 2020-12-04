@@ -8,7 +8,7 @@ using std::endl;
 
 void reverse(char *&str);                 //инвертирование строки
 void leading_zeros(char *&d1, char *&d2); //выравнивание чисел добавлением нулей
-char *abs(char *&d);                      //модуль числа
+void abs(char *&d);                       //модуль числа
 bool strlt(char *&d1, char *&d2);         // d1<d2
 bool strgt(char *&d1, char *&d2);         // d1>d2
 void cut_zeros(char *&d);                 //усечение нулей перед десятичной точкой
@@ -110,14 +110,13 @@ Value operator+(Value d1, Value d2)
     result.var[d1_len] = '\0';
     unsigned int i, j = 0;
     bool overflow = false; //переполнение разряда
-    short i1, i2, ii;
     for (i = 0; i < d2_len; i++) {
         // cout << "i=" << i << endl;
 
-        i1 = d1.var[i] - 0x30;
+        const auto i1 = d1.var[i] - 0x30;
         // cout << "i1=" << i1 << endl;
 
-        i2 = d2.var[i] - 0x30;
+        const auto i2 = d2.var[i] - 0x30;
         // cout << "i2=" << i2 << endl;
 
         if (d1.var[i] == '.') {
@@ -125,7 +124,7 @@ Value operator+(Value d1, Value d2)
             continue;
         }
 
-        ii = i1 + i2;
+        auto ii = i1 + i2;
         if (overflow) ii++;
         if (ii < 10) {
             result.var[j++] = ii + 0x30;
@@ -221,14 +220,13 @@ Value operator-(Value d1, Value d2)
     result.var[d1_len] = '\0';
     unsigned int i, j = 0;
     bool overflow = false; //переполнение разряда
-    short i1, i2, ii;
     for (i = 0; i < d2_len; i++) {
         // cout << "i=" << i << endl;
 
-        i1 = d1.var[i] - 0x30;
+        const auto i1 = d1.var[i] - 0x30;
         // cout << "i1=" << i1 << endl;
 
-        i2 = d2.var[i] - 0x30;
+        const auto i2 = d2.var[i] - 0x30;
         // cout << "i2=" << i2 << endl;
 
         if (d1.var[i] == '.') {
@@ -236,7 +234,7 @@ Value operator-(Value d1, Value d2)
             continue;
         }
 
-        ii = i1 - i2;
+        auto ii = i1 - i2;
         if (overflow) ii--;
         if (ii >= 0) {
             result.var[j++] = ii + 0x30;
@@ -442,17 +440,16 @@ Value operator*(Value d1, Value d2)
     reverse(d1.var);
     reverse(d2.var);
 
-    short i1, i2;
     for (unsigned int j = 0; j < d2_len; j++) {
         strcpy(prom.var, "");
         strcpy(j1.var, "0");
         strcpy(j2.var, "0");
 
         for (unsigned int i = 0; i < d1_len; i++) {
-            i1 = d1.var[i] - 0x30;
+            auto i1 = d1.var[i] - 0x30;
             // cout << "i1=" << i1 << endl;
 
-            i2 = d2.var[j] - 0x30;
+            auto i2 = d2.var[j] - 0x30;
             // cout << "i2=" << i2 << endl;
 
             /*ii=i1*i2;
@@ -578,12 +575,12 @@ Value operator/(Value d1, Value d2)
         exit(1);
     }
 
-    unsigned int d1_len = strlen(d1.var);
-    unsigned int d2_len = strlen(d2.var);
-    unsigned int dd1 = d1_len;
-    unsigned int dd2 = d2_len;
-    unsigned int ddd1 = d1_len;
-    unsigned int ddd2 = d2_len;
+    auto d1_len = strlen(d1.var);
+    auto d2_len = strlen(d2.var);
+    // auto dd1 = d1_len;
+    // auto dd2 = d2_len;
+    // auto ddd1 = d1_len;
+    // auto ddd2 = d2_len;
     int ppp;
     // ddd1=strchr(d1.var,'.')-d1.var;
     // ddd2=strchr(d2.var,'.')-d2.var;
@@ -593,7 +590,7 @@ Value operator/(Value d1, Value d2)
     n = strchr(d1.var, '.');
     if (n != nullptr) {
         pos1 = n - d1.var;
-        ddd1 = pos1;
+        // ddd1 = pos1;
         pos1 = d1_len - pos1 - 1;
         if (d1.var[0] == '.') pos1 = d1_len - 1;
         // cout << "pos1=" << pos1 << endl;
@@ -621,7 +618,7 @@ Value operator/(Value d1, Value d2)
     n = strchr(d2.var, '.');
     if (n != nullptr) {
         pos2 = n - d2.var;
-        ddd2 = pos2;
+        // ddd2 = pos2;
         pos2 = d2_len - pos2 - 1;
         if (d2.var[0] == '.') pos2 = d2_len - 1;
         // cout << "pos2=" << pos2 << endl;
@@ -676,7 +673,10 @@ Value operator/(Value d1, Value d2)
 
     Value rez;
 
-    unsigned int ii = 0, j = d2_len = strlen(d2.var), i1 = 0;
+    d2_len = strlen(d2.var);
+    unsigned int ii = 0;
+    unsigned int j = d2_len;
+    unsigned int i1 = 0;
     bool first = true;
 
     cut_zeros(d1.var);
@@ -1152,9 +1152,8 @@ Value Value::sqrt()
 
 void reverse(char *&str) //инвертирование строки
 {
-    char c;
     for (int i = 0, j = strlen(str) - 1; i < j; i++, j--) {
-        c = str[i];
+        char c = str[i];
         str[i] = str[j];
         str[j] = c;
     }
@@ -1304,7 +1303,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
     return;
 }
 
-char *abs(char *&d) //модуль числа
+void abs(char *&d) //модуль числа
 {
     unsigned res_len = strlen(d);
     if (strchr(d, '-') != nullptr) {
@@ -1324,7 +1323,7 @@ char *abs(char *&d) //модуль числа
         reverse(d);
         // cout << "dr=" << dr << endl;
     }
-    return d;
+    // return d;
 }
 
 bool strlt(char *&d1, char *&d2) // d1<d2
