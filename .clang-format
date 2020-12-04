@@ -1,0 +1,24 @@
+Language:                Cpp
+ColumnLimit:             120
+IndentWidth:             4
+ContinuationIndentWidth: 4
+TabWidth:                4
+UseTab:                  Never
+AllowShortFunctionsOnASingleLine: Inline
+BreakConstructorInitializers: BeforeComma
+BreakBeforeBraces: Custom
+BraceWrapping: {
+    AfterClass: 'false'
+    AfterControlStatement: 'false'
+    AfterEnum : 'false'
+    AfterFunction : 'true'
+    AfterNamespace : 'true'
+    AfterStruct : 'false'
+    AfterUnion : 'false'
+    BeforeCatch : 'false'
+    BeforeElse : 'false'
+    IndentBraces : 'false'
+}
+AlignAfterOpenBracket: Align
+AllowShortIfStatementsOnASingleLine: Always
+AccessModifierOffset: -4
