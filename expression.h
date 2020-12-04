@@ -6,6 +6,29 @@
 
 //! класс математических выражений
 class Expression final {
+public:
+    Expression() = default;
+    ~Expression() = default;
+
+    Expression(const Expression &) = delete;
+    Expression &operator=(const Expression &) = delete;
+
+    //! распечатать список
+    void print() const;
+
+    //! разбить строку на лексемы и преобразовать в список
+    void prepare(const std::string &expr);
+
+    //! вычислить значение выражения
+    std::string compute();
+
+private:
+    //! проверить число на корректность с помощью конечного автомата
+    static bool checkFormula(const std::string &num);
+
+    //! преобразовать список в польскую инверсную запись
+    void postfix();
+
 private:
     //! типы лексем
     enum TokenTypes {
@@ -59,31 +82,6 @@ private:
     static const States SM[16][17]; //!< массив для конечного автомата
 
     std::list<Token> tokens; //!< список лексем
-
-    //! проверить число на корректность с помощью конечного автомата
-    static bool checkFormula(const std::string &num);
-
-    //! преобразовать список в польскую инверсную запись
-    void postfix();
-
-public:
-    //! конструктор
-    Expression();
-    //! деструктор
-    ~Expression();
-
-    //! распечатать список
-    void print() const;
-    //! разбить строку на лексемы и преобразовать в список
-    void prepare(const std::string &expr);
-    //! вычислить значение выражения
-    std::string compute();
-
-private:
-    //! конструктор копирования
-    Expression(const Expression &);
-    //! оператор присваивания
-    Expression &operator=(const Expression &);
 };
 
 #endif // EXPRESSION_H

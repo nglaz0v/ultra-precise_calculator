@@ -66,14 +66,6 @@ signed char Expression::Token::getPrior() const
     return r;
 }
 
-Expression::Expression()
-{
-}
-
-Expression::~Expression()
-{
-}
-
 // проверить число на корректность с помощью конечного автомата
 bool Expression::checkFormula(const std::string& num)
 {
