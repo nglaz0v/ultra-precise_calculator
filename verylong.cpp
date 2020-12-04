@@ -232,11 +232,12 @@ Verylong operator-(const Verylong &u, const Verylong &v)
 
 Verylong operator*(const Verylong &u, const Verylong &v)
 {
-    Verylong pprod("1"), tempsum("0");
+    Verylong pprod("1");
+    Verylong tempsum("0");
     string::const_reverse_iterator r = v.vlstr.rbegin();
 
     for (int j = 0; r != v.vlstr.rend(); ++j, ++r) {
-        int digit = *r - '0';       // extract a digit
+        const int digit = *r - '0'; // extract a digit
         pprod = u.multdigit(digit); // multiplied by the digit
         pprod = pprod.mult10(j);    // "adds" suitable zeros behind
         tempsum = tempsum + pprod;  // result added to tempsum
@@ -248,20 +249,20 @@ Verylong operator*(const Verylong &u, const Verylong &v)
 //  This algorithm is the long division algorithm.
 Verylong operator/(const Verylong &u, const Verylong &v)
 {
-    const int len = u.vlstr.length() - v.vlstr.length();
-    string temp;
-    Verylong w, y, b, c, d, quotient = Verylong::zero;
-
     if (v == Verylong::zero) {
         std::cerr << "Error : division by zero" << std::endl;
         return Verylong::zero;
     }
 
-    w = abs(u);
-    y = abs(v);
+    const Verylong w = abs(u);
+    const Verylong y = abs(v);
     if (w < y) return Verylong::zero;
-    c = Verylong(w.vlstr.substr(0, w.vlstr.length() - len));
+    const int len = u.vlstr.length() - v.vlstr.length();
+    Verylong c = Verylong(w.vlstr.substr(0, w.vlstr.length() - len));
 
+    Verylong b;
+    Verylong d;
+    Verylong quotient = Verylong::zero;
     for (int i = 0; i <= len; i++) {
         quotient = quotient.mult10(1);
         b = d = Verylong::zero; // initialize b and d to 0
@@ -329,13 +330,12 @@ Verylong sqrt(const Verylong &v)
         return Verylong::zero;
     }
 
-    int j, k = v.vlstr.length() + 1, num = k >> 1;
-    Verylong y, z, sum, tempsum, digitsum;
-    string temp, w(v.vlstr);
+    const int len1 = v.vlstr.length() + 1;
+    const int num = len1 >> 1;
 
-    k = 0;
-    j = 1;
-
+    Verylong digitsum;
+    string w(v.vlstr);
+    int k = 0;
     // segment the number 2 digits by 2 digits
     if (v.vlstr.length() % 2)
         digitsum = Verylong(w[k++] - '0');
@@ -344,13 +344,18 @@ Verylong sqrt(const Verylong &v)
         k += 2;
     }
 
+    Verylong z;
+    Verylong sum;
+    string temp;
     // find the first digit of the integer square root
     sum = z = Verylong(int(sqrt(double(digitsum))));
     // store partial result
     temp = char(int(z) + '0');
     digitsum = digitsum - z * z;
 
-    for (; j < num; j++) {
+    Verylong y;
+    Verylong tempsum;
+    for (int j = 1; j < num; j++) {
         // get next digit from the number
         digitsum = digitsum.mult10(1) + Verylong(w[k++] - '0');
         y = z + z; // 2*a
@@ -372,11 +377,12 @@ Verylong sqrt(const Verylong &v)
 // Raise a number X to a power of degree
 Verylong pow(const Verylong &X, const Verylong &degree)
 {
-    Verylong N(degree), Y("1"), x(X);
-
+    Verylong N(degree);
     if (N == Verylong::zero) return Verylong::one;
     if (N < Verylong::zero) return Verylong::zero;
 
+    Verylong Y("1");
+    Verylong x(X);
     while (true) {
         if (N % Verylong::two != Verylong::zero) {
             Y = Y * x;
@@ -391,11 +397,8 @@ Verylong pow(const Verylong &X, const Verylong &degree)
 // Double division function
 double div(const Verylong &u, const Verylong &v)
 {
-    double qq = 0.0, qqscale = 1.0;
-    Verylong w, y, b, c;
-    int d, count;
     // number of significant digits
-    int decno = std::numeric_limits<double>::digits;
+    const static int decno = std::numeric_limits<double>::digits;
 
     if (v == Verylong::zero) {
         std::cerr << "ERROR : Division by zero" << std::endl;
@@ -403,8 +406,9 @@ double div(const Verylong &u, const Verylong &v)
     }
     if (u == Verylong::zero) return 0.0;
 
-    w = abs(u);
-    y = abs(v);
+    Verylong w = abs(u);
+    const Verylong y = abs(v);
+    double qqscale = 1.0;
     while (w < y) {
         w = w.mult10(1);
         qqscale *= 0.1;
@@ -412,12 +416,14 @@ double div(const Verylong &u, const Verylong &v)
 
     const int len = w.vlstr.length() - y.vlstr.length();
     string temp = w.vlstr.substr(0, w.vlstr.length() - len);
-    c = Verylong(temp);
+    Verylong c = Verylong(temp);
 
+    Verylong b;
+    double qq = 0.0;
     for (int i = 0; i <= len; i++) {
         qq *= 10.0;
         b = Verylong::zero;
-        d = 0; // initialize b and d to 0
+        int d = 0; // initialize b and d to 0
         while (b < c) {
             b += y;
             d += 1;
@@ -433,12 +439,12 @@ double div(const Verylong &u, const Verylong &v)
             c += Verylong(w.vlstr[w.vlstr.length() - len + i] - '0');
     }
     qq *= qqscale;
-    count = 0;
+    int count = 0;
 
     while (c != Verylong::zero && count < decno) {
         qqscale *= 0.1;
         b = Verylong::zero;
-        d = 0; // initialize b and d to 0
+        int d = 0; // initialize b and d to 0
         while (b < c) {
             b += y;
             d += 1;
@@ -483,14 +489,14 @@ Verylong Verylong::multdigit(int num) const
         string temp;
         string tmp(temp);
         for (auto r = vlstr.rbegin(); r != vlstr.rend(); r++) {
-            int d1 = *r - '0',                // get digit and multiplied by
-                digitprod = d1 * num + carry; // that digit plus carry
-            if (digitprod >= 10)              // if there's a new carry,
-            {
-                carry = digitprod / 10;  // carry is high digit
-                digitprod -= carry * 10; // result is low digit
-            } else
-                carry = 0;                // otherwise carry is 0
+            const int d1 = *r - '0';          // get digit and multiplied by
+            int digitprod = d1 * num + carry; // that digit plus carry
+            if (digitprod >= 10) {            // if there's a new carry,
+                carry = digitprod / 10;       // carry is high digit
+                digitprod -= carry * 10;      // result is low digit
+            } else {
+                carry = 0; // otherwise carry is 0
+            }
             tmp += char(digitprod + '0'); // insert char in string
         }
         temp.assign(tmp.rbegin(), tmp.rend());
