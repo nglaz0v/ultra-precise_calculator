@@ -2,11 +2,10 @@
 #include <ctime>
 #include <iostream>
 #include <stack>
-//#define USE_VERYLONG
+#define USE_VERYLONG
 #ifndef USE_VERYLONG
 #include "value.h"
 #else
-#warning "Factorial: error with operands > 1000"
 #include "verylong.h"
 typedef Verylong Value;
 #endif
@@ -365,7 +364,7 @@ std::string Expression::compute()
                 sv.factorial();
 #else
                 result = Verylong("1");
-                for (i = Verylong("2"); i < sv; ++i) { result *= i; }
+                for (i = Verylong("2"); i <= sv; ++i) { result *= i; }
                 sv = result;
 #endif
                 t2 = time(nullptr);
