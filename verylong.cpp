@@ -70,7 +70,7 @@ Verylong::operator int() const
 
     number = *j - '0';
 
-    for (j++; j != vlstr.rend(); j++) {
+    for (++j; j != vlstr.rend(); ++j) {
         factor *= 10;
         number += (*j - '0') * factor;
     }
@@ -155,10 +155,6 @@ Verylong Verylong::operator%=(const Verylong &v) { return *this = *this % v; }
 
 Verylong operator+(const Verylong &u, const Verylong &v)
 {
-    char digitsum, d1, d2, carry = 0;
-    string temp;
-    string::const_reverse_iterator j, k;
-
     if (u.vlsign ^ v.vlsign) {
         if (u.vlsign == 0)
             return u - abs(v);
@@ -166,11 +162,14 @@ Verylong operator+(const Verylong &u, const Verylong &v)
             return v - abs(u);
     }
 
+    string temp;
     string tmp(temp);
+    char carry = 0;
+    string::const_reverse_iterator j, k;
     for (j = u.vlstr.rbegin(), k = v.vlstr.rbegin(); j != u.vlstr.rend() || k != v.vlstr.rend();) {
-        d1 = (j == u.vlstr.rend()) ? 0 : *(j++) - '0'; // get digit
-        d2 = (k == v.vlstr.rend()) ? 0 : *(k++) - '0'; // get digit
-        digitsum = d1 + d2 + carry;                    // add digits
+        const char d1 = (j == u.vlstr.rend()) ? 0 : *(j++) - '0'; // get digit
+        const char d2 = (k == v.vlstr.rend()) ? 0 : *(k++) - '0'; // get digit
+        char digitsum = d1 + d2 + carry;                          // add digits
         carry = (digitsum >= 10) ? 1 : 0;
         digitsum -= 10 * carry;
         tmp += char(digitsum + '0');
@@ -183,18 +182,15 @@ Verylong operator+(const Verylong &u, const Verylong &v)
 
 Verylong operator-(const Verylong &u, const Verylong &v)
 {
-    char d, d1, d2, borrow = 0;
-    int negative;
-    string temp, temp2;
-    string::reverse_iterator i, j;
     if (u.vlsign ^ v.vlsign) {
         if (u.vlsign == 0)
             return u + abs(v);
         else
             return -(v + abs(u));
     }
+    int negative;
     Verylong w, y;
-    if (u.vlsign == 0) // both u,v are positive
+    if (u.vlsign == 0) { // both u,v are positive
         if (u < v) {
             w = v;
             y = u;
@@ -204,22 +200,26 @@ Verylong operator-(const Verylong &u, const Verylong &v)
             y = v;
             negative = 0;
         }
-    else // both u,v are negative
+    } else { // both u,v are negative
         if (u < v) {
-        w = u;
-        y = v;
-        negative = 1;
-    } else {
-        w = v;
-        y = u;
-        negative = 0;
+            w = u;
+            y = v;
+            negative = 1;
+        } else {
+            w = v;
+            y = u;
+            negative = 0;
+        }
     }
 
+    string temp;
     string tmp(temp);
+    char borrow = 0;
+    string::reverse_iterator i, j;
     for (i = w.vlstr.rbegin(), j = y.vlstr.rbegin(); i != w.vlstr.rend() || j != y.vlstr.rend();) {
-        d1 = (i == w.vlstr.rend()) ? 0 : *(i++) - '0';
-        d2 = (j == y.vlstr.rend()) ? 0 : *(j++) - '0';
-        d = d1 - d2 - borrow;
+        const char d1 = (i == w.vlstr.rend()) ? 0 : *(i++) - '0';
+        const char d2 = (j == y.vlstr.rend()) ? 0 : *(j++) - '0';
+        char d = d1 - d2 - borrow;
         borrow = (d < 0) ? 1 : 0;
         d += 10 * borrow;
         tmp += char(d + '0');
