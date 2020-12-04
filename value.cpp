@@ -54,7 +54,7 @@ Value::~Value()
 Value &Value::operator=(const Value &V)
 {
     if (this == &V) return *this;
-    if (var != nullptr) delete[] var;
+    delete[] var;
     if (V.var != nullptr) {
         var = new char[strlen(V.var) + 1];
         strcpy(var, V.var);
@@ -828,30 +828,30 @@ Value operator/(Value d1, Value d2)
         strcpy(d, result.var);
         delete[] result.var;
         result.var = new char[strlen(d) + 1 + 1];
-        unsigned int i = 0, j = 0;
-        while (i < strlen(d)) {
-            if (j == strlen(d) - pos)
-                result.var[j++] = '.';
+        unsigned int iI = 0;
+        unsigned int jJ = 0;
+        while (iI < strlen(d)) {
+            if (jJ == strlen(d) - pos)
+                result.var[jJ++] = '.';
             else
-                result.var[j++] = d[i++];
+                result.var[jJ++] = d[iI++];
         }
-        result.var[j] = '\0';
+        result.var[jJ] = '\0';
         delete[] d;
     } else {
         char *d = new char[strlen(result.var) + pos + 2 + 1];
-        unsigned int i = 0;
-        for (i = 0; i < pos + strlen(result.var); i++) d[i] = '0';
+        for (unsigned int ij = 0; ij < pos + strlen(result.var); ij++) d[ij] = '0';
         d[pos + strlen(result.var)] = '\0';
         // cout << "d=" << d << endl;
         reverse(d);
         reverse(result.var);
-        i = 0;
-        unsigned int j = 0;
-        while (i < strlen(result.var)) { d[j++] = result.var[i++]; }
-        while (j < pos) { d[j++] = '0'; }
-        d[j++] = '.';
-        d[j++] = '0';
-        d[j] = '\0';
+        unsigned int iI = 0;
+        unsigned int jJ = 0;
+        while (iI < strlen(result.var)) { d[jJ++] = result.var[iI++]; }
+        while (jJ < pos) { d[jJ++] = '0'; }
+        d[jJ++] = '.';
+        d[jJ++] = '0';
+        d[jJ] = '\0';
         reverse(d);
         // cout << "d=" << d << endl;
         delete[] result.var;
@@ -1019,7 +1019,7 @@ Value Value::sin()
         for (j = 0; j < strlen(y.var); j++) {
             d[j] = y.var[j];
             if (d[j] == '.') thk = true;
-            if (thk == true) k++;
+            if (thk) k++;
             if (k == Value::exactness + 2) break;
         }
         d[j] = '\0';
@@ -1081,7 +1081,7 @@ Value Value::cos()
         for (j = 0; j < strlen(y.var); j++) {
             d[j] = y.var[j];
             if (d[j] == '.') thk = true;
-            if (thk == true) k++;
+            if (thk) k++;
             if (k == Value::exactness + 2) break;
         }
         d[j] = '\0';
@@ -1168,7 +1168,6 @@ void reverse(char *&str) //инвертирование строки
         str[i] = str[j];
         str[j] = c;
     }
-    return;
 }
 
 void leading_zeros(char *&d1, char *&d2) //выравнивание чисел добавлением нулей
@@ -1311,7 +1310,6 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
 
     // cout << d1 << endl;
     // cout << d2 << endl;
-    return;
 }
 
 void abs(char *&d) //модуль числа
@@ -1392,7 +1390,6 @@ void cut_zeros(char *&d) //усечение нулей перед десятич
         d[0] = '0';
         d[1] = '\0';
     }
-    return;
 }
 
 void first_zero(char *&d) //добавление нуля для чисел, начинающихся с точки '.'
@@ -1410,7 +1407,6 @@ void first_zero(char *&d) //добавление нуля для чисел, н�
         reverse(d);
         delete[] tmp;
     }
-    return;
 }
 
 void del_point(char *&d)

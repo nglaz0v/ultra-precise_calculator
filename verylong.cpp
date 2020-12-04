@@ -17,7 +17,7 @@ const Verylong Verylong::two = Verylong("2");
 
 Verylong::Verylong(const string &value)
 {
-    string s = (value == "") ? "0" : value;
+    string s = (value.empty()) ? "0" : value;
 
     vlsign = (s[0] == '-') ? 1 : 0;          // check for negative sign
     if (ispunct(s[0]))                       // if the first character
@@ -249,7 +249,7 @@ Verylong operator*(const Verylong &u, const Verylong &v)
 //  This algorithm is the long division algorithm.
 Verylong operator/(const Verylong &u, const Verylong &v)
 {
-    int len = u.vlstr.length() - v.vlstr.length();
+    const int len = u.vlstr.length() - v.vlstr.length();
     string temp;
     Verylong w, y, b, c, d, quotient = Verylong::zero;
 
@@ -378,7 +378,7 @@ Verylong pow(const Verylong &X, const Verylong &degree)
     if (N == Verylong::zero) return Verylong::one;
     if (N < Verylong::zero) return Verylong::zero;
 
-    while (1) {
+    while (true) {
         if (N % Verylong::two != Verylong::zero) {
             Y = Y * x;
             N = N / Verylong::two;
@@ -411,7 +411,7 @@ double div(const Verylong &u, const Verylong &v)
         qqscale *= 0.1;
     }
 
-    int len = w.vlstr.length() - y.vlstr.length();
+    const int len = w.vlstr.length() - y.vlstr.length();
     string temp = w.vlstr.substr(0, w.vlstr.length() - len);
     c = Verylong(temp);
 
@@ -515,8 +515,8 @@ Verylong Verylong::mult10(int num) const
         return zero;
 }
 
-template <> Verylong zero(Verylong) { return Verylong::zero; }
-template <> Verylong one(Verylong) { return Verylong::one; }
+template <> Verylong zero(Verylong /*unused*/) { return Verylong::zero; }
+template <> Verylong one(Verylong /*unused*/) { return Verylong::one; }
 
 //#undef LIBSYMBOLICCPLUSPLUS
 // template <> Verylong zero(Verylong);
