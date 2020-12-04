@@ -103,12 +103,13 @@ Value operator+(Value d1, Value d2)
     // cout << "d1=" << d1.var << endl;
     // cout << "d2=" << d2.var << endl;
 
-    unsigned int d1_len = strlen(d1.var);
-    unsigned int d2_len = strlen(d2.var);
+    const unsigned int d1_len = strlen(d1.var);
+    const unsigned int d2_len = strlen(d2.var);
 
     result.var = new char[d1_len + 1];
     result.var[d1_len] = '\0';
-    unsigned int i, j = 0;
+    unsigned int i = 0;
+    unsigned int j = 0;
     bool overflow = false; //переполнение разряда
     for (i = 0; i < d2_len; i++) {
         // cout << "i=" << i << endl;
@@ -213,12 +214,13 @@ Value operator-(Value d1, Value d2)
     // cout << "d1=" << d1.var << endl;
     // cout << "d2=" << d2.var << endl;
 
-    unsigned int d1_len = strlen(d1.var);
-    unsigned int d2_len = strlen(d2.var);
+    const unsigned int d1_len = strlen(d1.var);
+    const unsigned int d2_len = strlen(d2.var);
 
     result.var = new char[d1_len + 1];
     result.var[d1_len] = '\0';
-    unsigned int i, j = 0;
+    unsigned int i = 0;
+    unsigned int j = 0;
     bool overflow = false; //переполнение разряда
     for (i = 0; i < d2_len; i++) {
         // cout << "i=" << i << endl;
@@ -344,7 +346,8 @@ Value operator*(Value d1, Value d2)
         delete[] d1.var;
 
         d1.var = new char[d1_len];
-        unsigned int i = 0, j = 0;
+        unsigned int i = 0;
+        unsigned int j = 0;
         while (i < d1_len) {
             if (d[i] != '.')
                 d1.var[j++] = d[i++];
@@ -358,13 +361,13 @@ Value operator*(Value d1, Value d2)
     }
     // cout << d1.var << endl;
 
-    if (d1.var[0] == '0') //убираем лишние нули
-    {
+    if (d1.var[0] == '0') { //убираем лишние нули
         char *d = new char[d1_len + 1];
         strcpy(d, d1.var);
         delete[] d1.var;
         d1.var = new char[d1_len];
-        unsigned int i = 0, j = 0;
+        unsigned int i = 0;
+        unsigned int j = 0;
         while (d[i] == '0') i++;
         while (i < d1_len) { d1.var[j++] = d[i++]; }
         d1.var[j] = '\0';
@@ -374,8 +377,7 @@ Value operator*(Value d1, Value d2)
 
     int pos2 = 0;
     n = strchr(d2.var, '.');
-    if (n != nullptr) //определяем количество знаков после '.'
-    {
+    if (n != nullptr) { //определяем количество знаков после '.'
         pos2 = n - d2.var;
         pos2 = d2_len - pos2 - 1;
         if (d2.var[0] == '.') pos2 = d2_len - 1;
@@ -387,7 +389,8 @@ Value operator*(Value d1, Value d2)
         delete[] d2.var;
 
         d2.var = new char[d2_len];
-        unsigned int i = 0, j = 0;
+        unsigned int i = 0;
+        unsigned int j = 0;
         while (i < d2_len) {
             if (d[i] != '.')
                 d2.var[j++] = d[i++];
@@ -401,13 +404,13 @@ Value operator*(Value d1, Value d2)
     }
     // cout << d2.var << endl;
 
-    if (d2.var[0] == '0') //убираем лишние нули
-    {
+    if (d2.var[0] == '0') { //убираем лишние нули
         char *d = new char[d2_len + 1];
         strcpy(d, d2.var);
         delete[] d2.var;
         d2.var = new char[d2_len];
-        unsigned int i = 0, j = 0;
+        unsigned int i = 0;
+        unsigned int j = 0;
         while (d[i] == '0') i++;
         while (i < d2_len) { d2.var[j++] = d[i++]; }
         d2.var[j] = '\0';
@@ -415,8 +418,7 @@ Value operator*(Value d1, Value d2)
         d2_len = j;
     }
 
-    if ((d2_len > d1_len) || ((d2_len == d1_len) && (strcmp(d2.var, d1.var) == 1))) // d2>d1
-    {
+    if ((d2_len > d1_len) || ((d2_len == d1_len) && (strcmp(d2.var, d1.var) == 1))) { // d2>d1
         char *d = new char[d1_len + 1];
         strcpy(d, d1.var);
         delete[] d1.var;
@@ -432,7 +434,9 @@ Value operator*(Value d1, Value d2)
     // cout << "d11=" << d1.var << endl;
     // cout << "d22=" << d2.var << endl;
 
-    Value prom, j1, j2;
+    Value prom;
+    Value j1;
+    Value j2;
     j1.var = new char[3];
     j2.var = new char[3];
     prom.var = new char[d1_len + d2_len + 1];
@@ -477,8 +481,7 @@ Value operator*(Value d1, Value d2)
             i1 = j1.var[0] - 0x30;
             i2 = j2.var[0] - 0x30;
 
-            if (strlen(j2.var) == 2) //результат больше 10
-            {
+            if (strlen(j2.var) == 2) { //результат больше 10
                 j1.var[0] = j1.var[0] + j2.var[0] - 0x30;
                 j2.var[0] = j2.var[1];
                 j2.var[1] = '\0';
@@ -506,13 +509,13 @@ Value operator*(Value d1, Value d2)
     pos = pos1 + pos2;
     // cout << "pos=" << pos << endl;
 
-    if (pos < strlen(result.var)) //определяем положение '.' в результате
-    {
+    if (pos < strlen(result.var)) { //определяем положение '.' в результате
         char *d = new char[strlen(result.var) + 1];
         strcpy(d, result.var);
         delete[] result.var;
         result.var = new char[strlen(d) + 1 + 1];
-        unsigned int i = 0, j = 0;
+        unsigned int i = 0;
+        unsigned int j = 0;
         while (i < strlen(d)) {
             if (j == strlen(d) - pos)
                 result.var[j++] = '.';
@@ -604,7 +607,8 @@ Value operator/(Value d1, Value d2)
         delete[] d1.var;
 
         d1.var = new char[d1_len];
-        unsigned int i = 0, j = 0;
+        unsigned int i = 0;
+        unsigned int j = 0;
         while (i < d1_len) {
             if (d[i] != '.')
                 d1.var[j++] = d[i++];
@@ -633,7 +637,8 @@ Value operator/(Value d1, Value d2)
         delete[] d2.var;
 
         d2.var = new char[d2_len];
-        unsigned int i = 0, j = 0;
+        unsigned int i = 0;
+        unsigned int j = 0;
         while (i < d2_len) {
             if (d[i] != '.')
                 d2.var[j++] = d[i++];
@@ -1174,8 +1179,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
 {
     unsigned int d1_len = strlen(d1);
     unsigned int d2_len = strlen(d2);
-    if (strchr(d1, '.') == nullptr) //добавление '.' в d1
-    {
+    if (strchr(d1, '.') == nullptr) { //добавление '.' в d1
         char *d = new char[d1_len + 1];
         strcpy(d, d1);
         delete[] d1;
@@ -1185,8 +1189,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
         delete[] d;
         d1_len++;
     }
-    if (strchr(d2, '.') == nullptr) //добавление '.' в d2
-    {
+    if (strchr(d2, '.') == nullptr) { //добавление '.' в d2
         char *d = new char[d2_len + 1];
         strcpy(d, d2);
         delete[] d2;
@@ -1232,8 +1235,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
     }
     d2ap[d2al] = '\0';
     // cout << "d2ap=" << d2ap << endl;
-    if (d1bl > d2bl) //добавление нулей в d2bp
-    {
+    if (d1bl > d2bl) { //добавление нулей в d2bp
         reverse(d2bp);
         char *d = new char[d2bl + 1];
         strcpy(d, d2bp);
@@ -1248,8 +1250,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
         // cout << "d1bp=" << d1bp << endl;
         // cout << "d2bp=" << d2bp << endl;
     }
-    if (d2bl > d1bl) //добавление нулей в d1bp
-    {
+    if (d2bl > d1bl) { //добавление нулей в d1bp
         reverse(d1bp);
         char *d = new char[d1bl + 1];
         strcpy(d, d1bp);
@@ -1264,8 +1265,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
         // cout << "d1bp=" << d1bp << endl;
         // cout << "d2bp=" << d2bp << endl;
     }
-    if (d1al > d2al) //добавление нулей в d2ap
-    {
+    if (d1al > d2al) { //добавление нулей в d2ap
         char *d = new char[d2al + 1];
         strcpy(d, d2ap);
         delete[] d2ap;
@@ -1278,8 +1278,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
         // cout << "d1ap=" << d1ap << endl;
         // cout << "d2ap=" << d2ap << endl;
     }
-    if (d2al > d1al) //добавление нулей в d1ap
-    {
+    if (d2al > d1al) { //добавление нулей в d1ap
         char *d = new char[d1al + 1];
         strcpy(d, d1ap);
         delete[] d1ap;
@@ -1369,12 +1368,13 @@ void cut_zeros(char *&d) //усечение нулей перед десятич
 {
     unsigned int res_len = strlen(d);
     char *tmp = new char[res_len + 1];
-    unsigned int i = 0, j = 0;
+    unsigned int i = 0;
+    unsigned int j = 0;
     bool f = true;
     while (i < res_len) {
-        if ((d[i] == '0') && f && (d[i + 1] != '.'))
+        if ((d[i] == '0') && f && (d[i + 1] != '.')) {
             i++;
-        else {
+        } else {
             tmp[j++] = d[i++];
             f = false;
         }
@@ -1412,8 +1412,7 @@ void first_zero(char *&d) //добавление нуля для чисел, н�
 void del_point(char *&d)
 {
     unsigned int res_len = strlen(d);
-    if (d[res_len - 1] == '.') //число оканчивается на '.'
-    {
+    if (d[res_len - 1] == '.') { //число оканчивается на '.'
         char *tmp = new char[res_len];
         strncpy(tmp, d, res_len - 1);
         tmp[res_len - 1] = '\0';
