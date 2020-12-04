@@ -59,10 +59,10 @@ bool Expression::checkFormula(const std::string &num)
 {
     States CurSt = st_start;
     int col = 0;
-    for (size_t i = 0; i < num.length(); ++i) {
+    for (char ch : num) {
         /*cout << endl << "i=" << i << endl;
         cout << "s[i]=" << s[i] << endl;*/
-        switch (num[i]) {
+        switch (ch) {
         case '0':
         case '1':
         case '2':
@@ -115,16 +115,16 @@ bool Expression::checkFormula(const std::string &num)
 void Expression::print() const
 {
     std::cout << "-------------------------" << std::endl;
-    for (auto p = tokens.cbegin(); p != tokens.cend(); ++p) {
+    for (const auto &token : tokens) {
         std::string tip;
-        switch (p->type) {
+        switch (token.type) {
         case number: tip = "number"; break;
         case operate: tip = "operation"; break;
         case bracketL: tip = "bracket("; break;
         case bracketR: tip = "bracket)"; break;
         case function: tip = "function"; break;
         }
-        std::cout << p->value << " : " << tip << std::endl;
+        std::cout << token.value << " : " << tip << std::endl;
     }
     std::cout << "=========================" << std::endl;
 }
@@ -214,7 +214,7 @@ void Expression::prepare(const std::string &expr)
             std::cerr << "\a\nError in expression: " << expr[i] << std::endl;
             exit(EXIT_FAILURE);
         }
-        tokens.push_back(Token(tp, ss)); // добавить лексему в список
+        tokens.emplace_back(Token(tp, ss)); // добавить лексему в список
     }
 
     std::cout << "\nString is divided into tokens" << std::endl;
@@ -236,15 +236,15 @@ void Expression::postfix()
     std::list<Token> ths;
     std::stack<Token> tmp_stack;
 
-    for (auto curTok = tokens.cbegin(); curTok != tokens.cend(); ++curTok) {
+    for (const auto &token : tokens) {
         Token tmp;
-        switch (curTok->type) {
-        case number:                //число
-            ths.push_back(*curTok); // помещаем число в выходную строку
+        switch (token.type) {
+        case number:              //число
+            ths.push_back(token); // помещаем число в выходную строку
             break;
 
-        case bracketL:               //открывающая скобка
-            tmp_stack.push(*curTok); // кладём открывающую скобку в стек
+        case bracketL:             //открывающая скобка
+            tmp_stack.push(token); // кладём открывающую скобку в стек
             break;
 
         case bracketR: // закрывающая скобка
@@ -264,11 +264,11 @@ void Expression::postfix()
         case function: // операция или функция
             // если стек не пуст, то извлекаем из стека в выходную строку все операции/функции
             // с большим или равным приоритетом
-            while (!tmp_stack.empty() && tmp_stack.top().getPrior() >= curTok->getPrior()) {
+            while (!tmp_stack.empty() && tmp_stack.top().getPrior() >= token.getPrior()) {
                 ths.push_back(tmp_stack.top());
                 tmp_stack.pop();
             }
-            tmp_stack.push(*curTok); // помещаем операцию/функцию в стек
+            tmp_stack.push(token); // помещаем операцию/функцию в стек
             break;
         }
     }
@@ -284,7 +284,7 @@ void Expression::postfix()
         }
     }
     this->tokens.clear();
-    for (auto it = ths.cbegin(); it != ths.cend(); ++it) { this->tokens.push_back(*it); }
+    for (const auto &tkn : ths) { this->tokens.push_back(tkn); }
 }
 
 // вычислить значение выражения
@@ -302,15 +302,16 @@ std::string Expression::compute()
     Verylong result;
     Verylong i;
 #endif
-    time_t t1, t2;
 
-    for (auto curTok = tokens.cbegin(); curTok != tokens.cend(); ++curTok) {
+    for (const auto &token : tokens) {
+        time_t t1;
+        time_t t2;
         std::string d1; // операнд 1
         std::string d2; // операнд 2
         std::string d0; // операнд
-        switch (curTok->type) {
-        case number:                 // число
-            tmp_stack.push(*curTok); // помещаем число в стек
+        switch (token.type) {
+        case number:               // число
+            tmp_stack.push(token); // помещаем число в стек
             break;
 
         case operate: // операция
@@ -330,7 +331,7 @@ std::string Expression::compute()
                 std::cerr << "\a\nNot enough operands" << std::endl;
                 exit(EXIT_FAILURE);
             }
-            switch (curTok->value[0]) {
+            switch (token.value[0]) {
             case '+': sv = Value(d1.c_str()) + Value(d2.c_str()); break;
             case '-': sv = Value(d1.c_str()) - Value(d2.c_str()); break;
             case '*': sv = Value(d1.c_str()) * Value(d2.c_str()); break;
@@ -353,7 +354,7 @@ std::string Expression::compute()
                 std::cerr << "\a\nNot enough operands" << std::endl;
                 exit(EXIT_FAILURE);
             }
-            switch (curTok->value[0]) {
+            switch (token.value[0]) {
             case '-':
                 sv = Value(d0.c_str());
                 sv = -sv;
@@ -371,7 +372,7 @@ std::string Expression::compute()
                 break;
             case 's':
                 sv = Value(d0.c_str());
-                if (curTok->value[1] == 'q') {
+                if (token.value[1] == 'q') {
 #ifndef USE_VERYLONG
                     sv.sqrt();
 #else

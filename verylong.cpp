@@ -85,7 +85,7 @@ Verylong::operator double() const
     string::const_reverse_iterator i = vlstr.rbegin();
 
     sum = double(*i) - '0';
-    for (i++; i != vlstr.rend(); i++) {
+    for (++i; i != vlstr.rend(); ++i) {
         factor *= 10.0;
         sum += double(*i - '0') * factor;
     }
@@ -160,7 +160,8 @@ Verylong operator+(const Verylong &u, const Verylong &v)
     string::const_reverse_iterator j, k;
 
     if (u.vlsign ^ v.vlsign) {
-        if (u.vlsign == 0) return u - abs(v);
+        if (u.vlsign == 0)
+            return u - abs(v);
         else
             return v - abs(u);
     }
@@ -187,7 +188,8 @@ Verylong operator-(const Verylong &u, const Verylong &v)
     string temp, temp2;
     string::reverse_iterator i, j;
     if (u.vlsign ^ v.vlsign) {
-        if (u.vlsign == 0) return u + abs(v);
+        if (u.vlsign == 0)
+            return u + abs(v);
         else
             return -(v + abs(u));
     }
@@ -234,7 +236,7 @@ Verylong operator*(const Verylong &u, const Verylong &v)
     Verylong pprod("1"), tempsum("0");
     string::const_reverse_iterator r = v.vlstr.rbegin();
 
-    for (int j = 0; r != v.vlstr.rend(); j++, r++) {
+    for (int j = 0; r != v.vlstr.rend(); ++j, ++r) {
         int digit = *r - '0';       // extract a digit
         pprod = u.multdigit(digit); // multiplied by the digit
         pprod = pprod.mult10(j);    // "adds" suitable zeros behind
@@ -292,11 +294,13 @@ int operator!=(const Verylong &u, const Verylong &v) { return !(u == v); }
 
 int operator<(const Verylong &u, const Verylong &v)
 {
-    if (u.vlsign < v.vlsign) return 0;
+    if (u.vlsign < v.vlsign)
+        return 0;
     else if (u.vlsign > v.vlsign)
         return 1;
     // exclusive or (^) to determine sign
-    if (u.vlstr.length() < v.vlstr.length()) return (1 ^ u.vlsign);
+    if (u.vlstr.length() < v.vlstr.length())
+        return (1 ^ u.vlsign);
     else if (u.vlstr.length() > v.vlstr.length())
         return (0 ^ u.vlsign);
     return (u.vlstr < v.vlstr && !u.vlsign) || (u.vlstr > v.vlstr && u.vlsign);
@@ -334,7 +338,8 @@ Verylong sqrt(const Verylong &v)
     j = 1;
 
     // segment the number 2 digits by 2 digits
-    if (v.vlstr.length() % 2) digitsum = Verylong(w[k++] - '0');
+    if (v.vlstr.length() % 2)
+        digitsum = Verylong(w[k++] - '0');
     else {
         digitsum = Verylong((w[k] - '0') * 10 + w[k + 1] - '0');
         k += 2;

@@ -20,8 +20,8 @@ private:
 
 public:
     // Constructors and destructor
-    Verylong(const string & = "0");
-    Verylong(int);
+    explicit Verylong(const string & = "0");
+    /*explicit*/ Verylong(int);
     ~Verylong();
 
     Verylong(const Verylong &);

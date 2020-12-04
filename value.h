@@ -8,8 +8,8 @@ private:
 public:
     static unsigned int exactness;
 
-    Value();
-    Value(const char *str);
+    explicit Value();
+    explicit Value(const char *str);
     ~Value();
 
     Value(const Value &V);

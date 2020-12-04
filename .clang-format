@@ -7,7 +7,7 @@ UseTab:                  Never
 AllowShortBlocksOnASingleLine: Always
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: All
-AllowShortIfStatementsOnASingleLine: Always
+AllowShortIfStatementsOnASingleLine: WithoutElse
 AllowShortLoopsOnASingleLine: true
 BreakConstructorInitializers: BeforeComma
 BreakBeforeBraces: Custom

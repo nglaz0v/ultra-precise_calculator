@@ -346,7 +346,8 @@ Value operator*(Value d1, Value d2)
         d1.var = new char[d1_len];
         unsigned int i = 0, j = 0;
         while (i < d1_len) {
-            if (d[i] != '.') d1.var[j++] = d[i++];
+            if (d[i] != '.')
+                d1.var[j++] = d[i++];
             else
                 i++;
         }
@@ -388,7 +389,8 @@ Value operator*(Value d1, Value d2)
         d2.var = new char[d2_len];
         unsigned int i = 0, j = 0;
         while (i < d2_len) {
-            if (d[i] != '.') d2.var[j++] = d[i++];
+            if (d[i] != '.')
+                d2.var[j++] = d[i++];
             else
                 i++;
         }
@@ -512,7 +514,8 @@ Value operator*(Value d1, Value d2)
         result.var = new char[strlen(d) + 1 + 1];
         unsigned int i = 0, j = 0;
         while (i < strlen(d)) {
-            if (j == strlen(d) - pos) result.var[j++] = '.';
+            if (j == strlen(d) - pos)
+                result.var[j++] = '.';
             else
                 result.var[j++] = d[i++];
         }
@@ -603,7 +606,8 @@ Value operator/(Value d1, Value d2)
         d1.var = new char[d1_len];
         unsigned int i = 0, j = 0;
         while (i < d1_len) {
-            if (d[i] != '.') d1.var[j++] = d[i++];
+            if (d[i] != '.')
+                d1.var[j++] = d[i++];
             else
                 i++;
         }
@@ -631,7 +635,8 @@ Value operator/(Value d1, Value d2)
         d2.var = new char[d2_len];
         unsigned int i = 0, j = 0;
         while (i < d2_len) {
-            if (d[i] != '.') d2.var[j++] = d[i++];
+            if (d[i] != '.')
+                d2.var[j++] = d[i++];
             else
                 i++;
         }
@@ -780,7 +785,8 @@ Value operator/(Value d1, Value d2)
         strcat(result.var, counter.var);
         delete[] d;
         // cout << rez.var << endl;
-        if (first) ii = ii + strlen(d2.var);
+        if (first)
+            ii = ii + strlen(d2.var);
         else
             ii++;
         first = false;
@@ -824,7 +830,8 @@ Value operator/(Value d1, Value d2)
         result.var = new char[strlen(d) + 1 + 1];
         unsigned int i = 0, j = 0;
         while (i < strlen(d)) {
-            if (j == strlen(d) - pos) result.var[j++] = '.';
+            if (j == strlen(d) - pos)
+                result.var[j++] = '.';
             else
                 result.var[j++] = d[i++];
         }
@@ -1026,7 +1033,8 @@ Value Value::sin()
         strcpy(d, z.var);
         abs(d);
 
-        if ((strgt(d, zero.var)) && (strchr(z.var, '-') == nullptr)) comp = z;
+        if ((strgt(d, zero.var)) && (strchr(z.var, '-') == nullptr))
+            comp = z;
         else
             comp = -z;
         delete[] d;
@@ -1087,7 +1095,8 @@ Value Value::cos()
         strcpy(d, z.var);
         abs(d);
 
-        if ((strgt(d, zero.var)) && (strchr(z.var, '-') == nullptr)) comp = z;
+        if ((strgt(d, zero.var)) && (strchr(z.var, '-') == nullptr))
+            comp = z;
         else
             comp = -z;
         delete[] d;
@@ -1102,8 +1111,8 @@ Value Value::cos()
 
 Value Value::tan()
 {
-    Value s = this->var;
-    Value c = this->var;
+    Value s(this->var);
+    Value c(this->var);
     s.sin();
     c.cos();
     *this = s / c;
@@ -1125,7 +1134,8 @@ Value Value::sqrt()
     z.var = new char[2];
     strcpy(z.var, "0");
     Value comp;
-    if (strgt(z.var, y.var)) comp = z - y;
+    if (strgt(z.var, y.var))
+        comp = z - y;
     else
         comp = y - z;
     leading_zeros(comp.var, eps.var);
@@ -1137,7 +1147,8 @@ Value Value::sqrt()
         y = y / Value("2");
         // y=(y+(*this)/y)/Value("2");
         cout << "sqrt = " << y.var << endl;
-        if (strgt(z.var, y.var)) comp = z - y;
+        if (strgt(z.var, y.var))
+            comp = z - y;
         else
             comp = y - z;
         leading_zeros(comp.var, eps.var);
@@ -1331,7 +1342,8 @@ bool strlt(char *&d1, char *&d2) // d1<d2
     if (strlen(d1) < strlen(d2)) return true;
     if (strlen(d1) > strlen(d2)) return false;
     for (int i = 0; d1[i] != '\0'; i++) {
-        if (d1[i] == d2[i]) continue;
+        if (d1[i] == d2[i])
+            continue;
         else if (d1[i] < d2[i])
             return true;
         else
@@ -1345,7 +1357,8 @@ bool strgt(char *&d1, char *&d2) // d1>d2
     if (strlen(d1) > strlen(d2)) return true;
     if (strlen(d1) < strlen(d2)) return false;
     for (int i = 0; d1[i] != '\0'; i++) {
-        if (d1[i] == d2[i]) continue;
+        if (d1[i] == d2[i])
+            continue;
         else if (d1[i] > d2[i])
             return true;
         else
@@ -1361,7 +1374,8 @@ void cut_zeros(char *&d) //усечение нулей перед десятич
     unsigned int i = 0, j = 0;
     bool f = true;
     while (i < res_len) {
-        if ((d[i] == '0') && f && (d[i + 1] != '.')) i++;
+        if ((d[i] == '0') && f && (d[i + 1] != '.'))
+            i++;
         else {
             tmp[j++] = d[i++];
             f = false;
