@@ -1,18 +1,19 @@
-#include <iostream>
-#include <string>
-#include <ctime>
 #include "expression.h"
 #include "value.h"
 
+#include <climits>
+#include <ctime>
+#include <iostream>
+#include <string>
 
 //! преобразование строки в число
-bool str2long(const char *str, long& val)
+bool str2long(const char *str, long &val)
 {
     char *endptr = nullptr;
-    errno = 0;  /* To distinguish success/failure after call */
+    errno = 0; // To distinguish success/failure after call
     val = strtol(str, &endptr, 10);
-    /* Check for various possible errors */
-    if ( ((errno == ERANGE) && ((val == LONG_MAX) || (val == LONG_MIN))) || ((errno != 0) && (val == 0)) ) {
+    // Check for various possible errors
+    if (((errno == ERANGE) && ((val == LONG_MAX) || (val == LONG_MIN))) || ((errno != 0) && (val == 0))) {
         perror("strtol");
         return false;
     }
@@ -24,7 +25,7 @@ bool str2long(const char *str, long& val)
         std::cerr << "Further characters after number: " << endptr << std::endl;
         return false;
     }
-    /* If we got here, strtol() successfully parsed a number */
+    // If we got here, strtol() successfully parsed a number
     return true;
 }
 
@@ -51,7 +52,7 @@ int main()
         std::cout << "\nresult=" << expr.compute() << std::endl;
 
         while (std::cin.get() != '\n') continue;
-	}
+    }
 #else
     expr.prepare("!(4000)");
     const time_t t1 = time(nullptr);
@@ -61,5 +62,5 @@ int main()
 #endif
     std::cout << "Press 'Enter'" << std::endl;
     std::cin.get();
-	return 0;
+    return 0;
 }
