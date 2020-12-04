@@ -1,17 +1,17 @@
 #ifndef IDENTITY_H
 #define IDENTITY_H
 
-#include <iostream>
-#include <cstdlib>
-#include <complex>
-
-template <class T> T zero(T) { static const T z = T() - T(); return z; }
+template <class T> T zero(T)
+{
+    static const T z = T() - T();
+    return z;
+}
 
 template <class T> T one(T)
 {
- static T z(zero(T()));
- static const T o = ++z;
- return o;
+    static T z(zero(T()));
+    static const T o = ++z;
+    return o;
 }
 
 template <> char zero(char);

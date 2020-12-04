@@ -1,5 +1,8 @@
 #include "verylong.h"
 
+#include <iostream>
+#include <limits>
+
 //#define LIBSYMBOLICCPLUSPLUS
 
 // Class Data
@@ -93,9 +96,9 @@ Verylong::operator string () const
 
 // Various member operators
 
-const Verylong & Verylong::operator = (const Verylong &rhs)
+Verylong & Verylong::operator = (const Verylong &rhs)
 {
-   if(this == &rhs) return *this;
+   if (this == &rhs) return *this;
 
    vlstr = rhs.vlstr;
    vlsign = rhs.vlsign;

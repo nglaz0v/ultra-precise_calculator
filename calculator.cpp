@@ -55,10 +55,16 @@ int main()
     }
 #else
     expr.prepare("!(4000)");
-    const time_t t1 = time(nullptr);
-    for (int i = 0; i < 1; ++i) expr.compute();
-    const time_t t2 = time(nullptr);
-    std::cout << "Time=" << (t2 - t1) << std::endl;
+    std::string result;
+    const auto t1 = time(nullptr);
+    const auto T1 = clock();
+    for (int i = 0; i < 1; ++i) result = expr.compute();
+    const auto t2 = time(nullptr);
+    const auto T2 = clock();
+    const auto t = t2 - t1;
+    const auto T = T2 - T1;
+    std::cout << "Time=" << t << "\t" << T << "\t" << (float(T) / CLOCKS_PER_SEC) << std::endl;
+    std::cout << "\nresult=" << result << std::endl;
 #endif
     std::cout << "Press 'Enter'" << std::endl;
     std::cin.get();

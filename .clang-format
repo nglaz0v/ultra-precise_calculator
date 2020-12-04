@@ -6,7 +6,7 @@ TabWidth:                4
 UseTab:                  Never
 AllowShortBlocksOnASingleLine: Always
 AllowShortCaseLabelsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: Inline
+AllowShortFunctionsOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: Always
 AllowShortLoopsOnASingleLine: true
 BreakConstructorInitializers: BeforeComma

@@ -21,7 +21,7 @@ template <> double zero(double) { return static_cast<double>(0.0); }
 template <> double one(double) { return static_cast<double>(1.0); }
 
 //#undef LIBSYMBOLICCPLUSPLUS
-//template <class T>
-//std::complex<T> zero(std::complex<T>) { return std::complex<T>(zero(T())); }
-//template <class T>
-//std::complex<T> one(std::complex<T>) { return std::complex<T>(one(T())); }
+// template <class T>
+// std::complex<T> zero(std::complex<T>) { return std::complex<T>(zero(T())); }
+// template <class T>
+// std::complex<T> one(std::complex<T>) { return std::complex<T>(one(T())); }
