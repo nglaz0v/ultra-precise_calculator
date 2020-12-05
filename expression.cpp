@@ -5,10 +5,10 @@
 #define USE_VERYLONG
 #ifndef USE_VERYLONG
 #include "value.h"
-#else
+#else // USE_VERYLONG
 #include "verylong.h"
 typedef Verylong Value;
-#endif
+#endif // !USE_VERYLONG
 
 // clang-format off
 const Expression::States Expression::SM[16][17] =
@@ -301,7 +301,7 @@ std::string Expression::compute()
 #ifdef USE_VERYLONG
     Verylong result;
     Verylong i;
-#endif
+#endif // USE_VERYLONG
 
     for (const auto &token : tokens) {
         time_t t1;
@@ -310,11 +310,11 @@ std::string Expression::compute()
         std::string d2; // операнд 2
         std::string d0; // операнд
         switch (token.type) {
-        case number:               // число
+        case number: {             // число
             tmp_stack.push(token); // помещаем число в стек
             break;
-
-        case operate: // операция
+        }
+        case operate: { // операция
             if (!tmp_stack.empty()) {
                 d2 = tmp_stack.top().value;
                 tmp_stack.pop();
@@ -338,14 +338,14 @@ std::string Expression::compute()
             case '/': sv = Value(d1.c_str()) / Value(d2.c_str()); break;
 #ifndef USE_VERYLONG
             case '^': sv = Value(d1.c_str()) ^ Value(d2.c_str()); break;
-#else
+#else  // USE_VERYLONG
             case '^': sv = pow(Value(d1.c_str()), Value(d2.c_str())); break;
-#endif
+#endif // !USE_VERYLONG
             }
             tmp_stack.push(Token(number, std::string(sv)));
             break;
-
-        case function:
+        }
+        case function: {
             if (!tmp_stack.empty()) {
                 d0 = tmp_stack.top().value;
                 tmp_stack.pop();
@@ -362,11 +362,11 @@ std::string Expression::compute()
             case '!': sv = Value(d0.c_str()); t1 = time(nullptr);
 #ifndef USE_VERYLONG
                 sv.factorial();
-#else
+#else  // USE_VERYLONG
                 result = Verylong("1");
                 for (i = Verylong("2"); i <= sv; ++i) { result *= i; }
                 sv = result;
-#endif
+#endif // !USE_VERYLONG
                 t2 = time(nullptr);
                 std::cout << "Time=" << (t2 - t1) << std::endl;
                 break;
@@ -375,34 +375,35 @@ std::string Expression::compute()
                 if (token.value[1] == 'q') {
 #ifndef USE_VERYLONG
                     sv.sqrt();
-#else
+#else  // USE_VERYLONG
                     sv = sqrt(sv);
-#endif
+#endif // !USE_VERYLONG
                 } else {
 #ifndef USE_VERYLONG
                     sv.sin();
-#else
+#else  // USE_VERYLONG
                     sv = sin(sv);
-#endif
+#endif // !USE_VERYLONG
                 }
                 break;
             case 'c': sv = Value(d0.c_str());
 #ifndef USE_VERYLONG
                 sv.cos();
-#else
+#else  // USE_VERYLONG
                 sv = cos(sv);
-#endif
+#endif // !USE_VERYLONG
                 break;
             case 't': sv = Value(d0.c_str());
 #ifndef USE_VERYLONG
                 sv.tan();
-#else
+#else  // USE_VERYLONG
                 sv = tan(sv);
-#endif
+#endif // !USE_VERYLONG
                 break;
             }
             tmp_stack.push(Token(number, std::string(sv)));
             break;
+        }
         case bracketL:
         case bracketR: break;
         }
