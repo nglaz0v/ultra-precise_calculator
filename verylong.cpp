@@ -45,10 +45,32 @@ Verylong::Verylong(int n)
         vlstr = string("0"); // else number is zero
 }
 
-Verylong::Verylong(const Verylong &x)
-    : vlstr(x.vlstr)
-    , vlsign(x.vlsign)
+Verylong::Verylong(const Verylong &rhs)
+    : vlstr(rhs.vlstr)
+    , vlsign(rhs.vlsign)
 {
+}
+
+Verylong &Verylong::operator=(const Verylong &rhs)
+{
+    if (this == &rhs) return *this;
+    vlstr = rhs.vlstr;
+    vlsign = rhs.vlsign;
+    return *this;
+}
+
+Verylong::Verylong(Verylong &&rhs)
+    : vlstr{std::move(rhs.vlstr)}
+    , vlsign{std::move(rhs.vlsign)}
+{
+}
+
+Verylong &Verylong::operator=(Verylong &&rhs)
+{
+    // if (this == &rhs) return *this;
+    vlstr = std::move(rhs.vlstr);
+    vlsign = std::move(rhs.vlsign);
+    return *this;
 }
 
 Verylong::~Verylong() {}
@@ -96,16 +118,6 @@ Verylong::operator string() const
 }
 
 // Various member operators
-
-Verylong &Verylong::operator=(const Verylong &rhs)
-{
-    if (this == &rhs) return *this;
-
-    vlstr = rhs.vlstr;
-    vlsign = rhs.vlsign;
-
-    return *this;
-}
 
 // Unary - operator
 Verylong Verylong::operator-() const

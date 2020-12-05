@@ -27,6 +27,9 @@ public:
     Verylong(const Verylong &);
     Verylong &operator=(const Verylong &);
 
+    Verylong(Verylong &&);
+    Verylong &operator=(Verylong &&);
+
     // Conversion operators
     operator int() const;
     operator double() const;
