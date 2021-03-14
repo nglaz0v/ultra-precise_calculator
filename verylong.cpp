@@ -59,13 +59,13 @@ Verylong &Verylong::operator=(const Verylong &rhs)
     return *this;
 }
 
-Verylong::Verylong(Verylong &&rhs)
+Verylong::Verylong(Verylong &&rhs) noexcept
     : vlstr{std::move(rhs.vlstr)}
     , vlsign{std::move(rhs.vlsign)}
 {
 }
 
-Verylong &Verylong::operator=(Verylong &&rhs)
+Verylong &Verylong::operator=(Verylong &&rhs) noexcept
 {
     // if (this == &rhs) return *this;
     vlstr = std::move(rhs.vlstr);

@@ -6,12 +6,12 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-void reverse(char *&str);                 //инвертирование строки
-void leading_zeros(char *&d1, char *&d2); //выравнивание чисел добавлением нулей
-void abs(char *&d);                       //модуль числа
-bool strlt(char *&d1, char *&d2);         // d1<d2
-bool strgt(char *&d1, char *&d2);         // d1>d2
-void cut_zeros(char *&d);                 //усечение нулей перед десятичной точкой
+void reverse(char *&str);                   //инвертирование строки
+void leading_zeros(char *&d1, char *&d2);   //выравнивание чисел добавлением нулей
+void abs(char *&d);                         //модуль числа
+bool strlt(const char *d1, const char *d2); // d1<d2
+bool strgt(const char *d1, const char *d2); // d1>d2
+void cut_zeros(char *&d);                   //усечение нулей перед десятичной точкой
 void first_zero(char *&d); //добавление нуля для чисел, начинающихся с точки '.'
 void del_point(char *&d);  //удаляет '.' в конце строки
 char *epsilon(unsigned int exact); //вычисление точности
@@ -1334,7 +1334,7 @@ void abs(char *&d) //модуль числа
     // return d;
 }
 
-bool strlt(char *&d1, char *&d2) // d1<d2
+bool strlt(const char *d1, const char *d2) // d1<d2
 {
     if (strlen(d1) < strlen(d2)) return true;
     if (strlen(d1) > strlen(d2)) return false;
@@ -1349,7 +1349,7 @@ bool strlt(char *&d1, char *&d2) // d1<d2
     return false;
 }
 
-bool strgt(char *&d1, char *&d2) // d1>d2
+bool strgt(const char *d1, const char *d2) // d1>d2
 {
     if (strlen(d1) > strlen(d2)) return true;
     if (strlen(d1) < strlen(d2)) return false;
