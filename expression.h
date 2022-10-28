@@ -12,6 +12,8 @@ public:
 
     Expression(const Expression &) = delete;
     Expression &operator=(const Expression &) = delete;
+    Expression(Expression &&) noexcept = delete;
+    Expression &operator=(Expression &&) noexcept = delete;
 
     //! распечатать список
     void print() const;

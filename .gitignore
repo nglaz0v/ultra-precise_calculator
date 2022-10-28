@@ -77,3 +77,8 @@ CMakeFiles
 cmake_install.cmake
 *_autogen
 CMakeLists.txt.user
+
+# Flex & Bison generated files
+parser.cc
+parser.hh
+scanner.cc

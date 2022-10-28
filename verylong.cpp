@@ -44,7 +44,7 @@ Verylong::Verylong(int n)
     else
         vlstr = string("0"); // else number is zero
 }
-
+/*
 Verylong::Verylong(const Verylong &rhs)
     : vlstr(rhs.vlstr)
     , vlsign(rhs.vlsign)
@@ -74,7 +74,7 @@ Verylong &Verylong::operator=(Verylong &&rhs) noexcept
 }
 
 Verylong::~Verylong() {}
-
+*/
 Verylong::operator int() const
 {
     const static Verylong max0(std::numeric_limits<int>::max());

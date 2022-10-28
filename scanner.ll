@@ -30,4 +30,4 @@
 			return(c);
 		}
 %%
-/* Epilogue. */
+/* Epilogue (C code). */
