@@ -3,6 +3,7 @@
 
 #include <list>
 #include <string>
+#include <utility>
 
 //! класс математических выражений
 class Expression final {
@@ -43,16 +44,12 @@ private:
 
     //! лексема
     struct Token {
-        TokenTypes type;   //!< тип лексемы
-        std::string value; //!< значение лексемы
-        Token()
-            : type(number)
-            , value("")
-        {
-        }
-        Token(TokenTypes _type, const std::string &_value)
+        TokenTypes type{number}; //!< тип лексемы
+        std::string value;       //!< значение лексемы
+        Token() = default;
+        Token(TokenTypes _type, std::string _value)
             : type(_type)
-            , value(_value)
+            , value(std::move(_value))
         {
         }
         //! возвращает приоритет лексемы

@@ -7,7 +7,7 @@
 #include "value.h"
 #else // USE_VERYLONG
 #include "verylong.h"
-typedef Verylong Value;
+using Value = Verylong;
 #endif // !USE_VERYLONG
 
 // clang-format off

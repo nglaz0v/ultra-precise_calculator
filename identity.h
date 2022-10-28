@@ -21,13 +21,13 @@
 #ifndef IDENTITY_H
 #define IDENTITY_H
 
-template <class T> T zero(T)
+template <class T> T zero(T /*unused*/)
 {
     static const T z = T() - T();
     return z;
 }
 
-template <class T> T one(T)
+template <class T> T one(T /*unused*/)
 {
     static T z(zero(T()));
     static const T o = ++z;

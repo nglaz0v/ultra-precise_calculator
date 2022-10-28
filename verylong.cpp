@@ -113,7 +113,7 @@ Verylong::operator double() const
 
 Verylong::operator string() const
 {
-    if (vlstr.length() == 0) return string("0");
+    if (vlstr.length() == 0) return {"0"};
     return vlstr;
 }
 
