@@ -24,6 +24,7 @@ sqrt    { return TKN_SQRT; }
 \*      { return TKN_MULT; }
 \/      { return TKN_DIV; }
 \^      { return TKN_POW; }
+\!      { return TKN_FACT; }
 \n      { nlines++; return '\n'; }
 .
 %%
