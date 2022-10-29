@@ -15,6 +15,8 @@ public:
     Expression(Expression &&) noexcept = delete;
     Expression &operator=(Expression &&) noexcept = delete;
 
+    static void setup();
+
     //! print the list
     void print() const;
 

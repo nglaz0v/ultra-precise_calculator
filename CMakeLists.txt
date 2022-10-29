@@ -13,7 +13,7 @@ FLEX_TARGET(MyScanner scanner.ll ${CMAKE_CURRENT_BINARY_DIR}/scanner.cc)
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 
 add_executable(calculator
-    calculator.cpp
+    main.cpp
     expression.cpp
     expression.h
     identity.cpp

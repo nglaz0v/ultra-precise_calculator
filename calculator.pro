@@ -4,7 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-        calculator.cpp\
+        main.cpp\
         expression.cpp\
         value.cpp\
         verylong.cpp\
