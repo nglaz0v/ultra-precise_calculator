@@ -3,7 +3,6 @@
 
 #include <list>
 #include <string>
-#include <utility>
 
 //! mathematical expression class
 class Expression final {
@@ -39,9 +38,9 @@ private:
         TokenTypes type{number};
         std::string value;
         Token() = default;
-        Token(TokenTypes _type, std::string _value)
+        Token(TokenTypes _type, const char *_value)
             : type(_type)
-            , value(std::move(_value))
+            , value(_value)
         {
         }
         //! return the priority of the token

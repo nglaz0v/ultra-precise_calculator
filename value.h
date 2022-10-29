@@ -1,6 +1,8 @@
 #ifndef VALUE_H
 #define VALUE_H
 
+#include <string>
+
 class Value final {
 private:
     char *var;
@@ -31,6 +33,11 @@ public:
     Value sqrt();
 
     operator const char *() const { return var; }
+
+    explicit Value(const std::string &str)
+        : Value(str.c_str())
+    {
+    }
 };
 
 #endif // VALUE_H

@@ -1,4 +1,5 @@
 #include "expression.h"
+
 #include <ctime>
 #include <iostream>
 #include <stack>
@@ -7,7 +8,6 @@
 #include "value.h"
 #else // USE_VERYLONG
 #include "verylong.h"
-using Value = Verylong;
 #endif // !USE_VERYLONG
 
 // clang-format off
@@ -210,7 +210,7 @@ void Expression::prepare(const std::string &expr)
             std::cerr << "\a\nError in expression: " << expr[i] << std::endl;
             exit(EXIT_FAILURE);
         }
-        tokens.emplace_back(Token(tp, ss)); // add token to list
+        tokens.emplace_back(Token(tp, ss.c_str())); // add token to list
     }
 
     std::cout << "\nString is divided into tokens" << std::endl;
@@ -284,13 +284,19 @@ void Expression::postfix()
 
 std::string Expression::compute()
 {
+#ifndef USE_VERYLONG
+    using value_t = Value;
+#else  // USE_VERYLONG
+    using value_t = Verylong;
+#endif // !USE_VERYLONG
+
     if (tokens.empty()) {
         std::cerr << "\a\nEmpty string" << std::endl;
         exit(EXIT_FAILURE);
     }
 
     std::stack<Token> tmp_stack;
-    Value sv; // result-expression
+    value_t sv; // result-expression
 
 #ifdef USE_VERYLONG
     Verylong result;
@@ -326,17 +332,17 @@ std::string Expression::compute()
                 exit(EXIT_FAILURE);
             }
             switch (token.value[0]) {
-            case '+': sv = Value(d1.c_str()) + Value(d2.c_str()); break;
-            case '-': sv = Value(d1.c_str()) - Value(d2.c_str()); break;
-            case '*': sv = Value(d1.c_str()) * Value(d2.c_str()); break;
-            case '/': sv = Value(d1.c_str()) / Value(d2.c_str()); break;
+            case '+': sv = value_t(d1) + value_t(d2); break;
+            case '-': sv = value_t(d1) - value_t(d2); break;
+            case '*': sv = value_t(d1) * value_t(d2); break;
+            case '/': sv = value_t(d1) / value_t(d2); break;
 #ifndef USE_VERYLONG
-            case '^': sv = Value(d1.c_str()) ^ Value(d2.c_str()); break;
+            case '^': sv = value_t(d1) ^ value_t(d2); break;
 #else  // USE_VERYLONG
-            case '^': sv = pow(Value(d1.c_str()), Value(d2.c_str())); break;
+            case '^': sv = pow(value_t(d1), value_t(d2)); break;
 #endif // !USE_VERYLONG
             }
-            tmp_stack.push(Token(number, std::string(sv)));
+            tmp_stack.push(Token(number, std::string(sv).c_str()));
             break;
         }
         case function: {
@@ -350,10 +356,10 @@ std::string Expression::compute()
             }
             switch (token.value[0]) {
             case '-':
-                sv = Value(d0.c_str());
+                sv = value_t(d0);
                 sv = -sv;
                 break;
-            case '!': sv = Value(d0.c_str()); t1 = time(nullptr);
+            case '!': sv = value_t(d0); t1 = time(nullptr);
 #ifndef USE_VERYLONG
                 sv.factorial();
 #else  // USE_VERYLONG
@@ -365,7 +371,7 @@ std::string Expression::compute()
                 std::cout << "Time=" << (t2 - t1) << std::endl;
                 break;
             case 's':
-                sv = Value(d0.c_str());
+                sv = value_t(d0);
                 if (token.value[1] == 'q') {
 #ifndef USE_VERYLONG
                     sv.sqrt();
@@ -380,14 +386,14 @@ std::string Expression::compute()
 #endif // !USE_VERYLONG
                 }
                 break;
-            case 'c': sv = Value(d0.c_str());
+            case 'c': sv = value_t(d0);
 #ifndef USE_VERYLONG
                 sv.cos();
 #else  // USE_VERYLONG
                 sv = cos(sv);
 #endif // !USE_VERYLONG
                 break;
-            case 't': sv = Value(d0.c_str());
+            case 't': sv = value_t(d0);
 #ifndef USE_VERYLONG
                 sv.tan();
 #else  // USE_VERYLONG
@@ -395,7 +401,7 @@ std::string Expression::compute()
 #endif // !USE_VERYLONG
                 break;
             }
-            tmp_stack.push(Token(number, std::string(sv)));
+            tmp_stack.push(Token(number, std::string(sv).c_str()));
             break;
         }
         case bracketL:
