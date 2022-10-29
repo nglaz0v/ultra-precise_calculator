@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-//! класс математических выражений
+//! mathematical expression class
 class Expression final {
 public:
     Expression() = default;
@@ -16,71 +16,63 @@ public:
     Expression(Expression &&) noexcept = delete;
     Expression &operator=(Expression &&) noexcept = delete;
 
-    //! распечатать список
+    //! print the list
     void print() const;
 
-    //! разбить строку на лексемы и преобразовать в список
+    //! split the string into tokens and convert to list
     void prepare(const std::string &expr);
 
-    //! вычислить значение выражения
+    //! calculate the value of the expression
     std::string compute();
 
 private:
-    //! проверить число на корректность с помощью конечного автомата
+    //! check the number for correctness using a state machine
     static bool checkFormula(const std::string &num);
 
-    //! преобразовать список в польскую инверсную запись
+    //! convert the list to inverse polish notation
     void postfix();
 
 private:
-    //! типы лексем
-    enum TokenTypes {
-        number,   //!< число
-        operate,  //!< оператор
-        bracketL, //!< открывающая скобка
-        bracketR, //!< закрывающая скобка
-        function  //!< функция
-    };
+    enum TokenTypes { number, operate, bracketL, bracketR, function };
 
-    //! лексема
     struct Token {
-        TokenTypes type{number}; //!< тип лексемы
-        std::string value;       //!< значение лексемы
+        TokenTypes type{number};
+        std::string value;
         Token() = default;
         Token(TokenTypes _type, std::string _value)
             : type(_type)
             , value(std::move(_value))
         {
         }
-        //! возвращает приоритет лексемы
+        //! return the priority of the token
         signed char getPrior() const;
     };
 
-    //! значения массива для конечного автомата
+    //! array values for state machine
     enum States {
-        st_start = 0,    //!< начальное состояние
-        st_int_part,     //!< набор целой части (были цифры)
-        st_flt_part_pnt, //!< набор дробной части (цифр не было, была точка)
-        st_uminus, //!< унарный минус, набор целой части (был знак, цифр не было)
-        st_braL,     //!< "("
-        st_fact,     //!< "!"
-        st_s,        //!< "s"
-        st_c,        //!< "c"
-        st_t,        //!< "t"
-        st_operat,   //!< операция
-        st_braR,     //!< ")"
-        st_flt_part, //!< набор дробной части (были цифры)
-        st_sin_tan,  //!< "sin", "tan"
-        st_q,        //!< "q"
-        st_cos,      //!< "cos"
-        st_sqrt,     //!< "sqrt"
-        error,       //!< ошибка
-        OK           //!< всё в порядке
+        st_start = 0,    //!< initial state
+        st_int_part,     //!< integer part set (there were numbers)
+        st_flt_part_pnt, //!< fractional set (there were no numbers, there was a point)
+        st_uminus,       //!< unary minus, integer part set (there was a sign, there were no numbers)
+        st_braL,         //!< "("
+        st_fact,         //!< "!"
+        st_s,            //!< "s"
+        st_c,            //!< "c"
+        st_t,            //!< "t"
+        st_operat,       //!< operation
+        st_braR,         //!< ")"
+        st_flt_part,     //!< fractional set (there were numbers)
+        st_sin_tan,      //!< "sin", "tan"
+        st_q,            //!< "q"
+        st_cos,          //!< "cos"
+        st_sqrt,         //!< "sqrt"
+        error,           //!< fault
+        OK               //!< everything is fine
     };
 
-    static const States SM[16][17]; //!< массив для конечного автомата
+    static const States SM[16][17]; //!< array for state machine
 
-    std::list<Token> tokens; //!< список лексем
+    std::list<Token> tokens; //!< list of tokens
 };
 
 #endif // EXPRESSION_H

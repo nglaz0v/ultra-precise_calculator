@@ -32,7 +32,6 @@ const Expression::States Expression::SM[16][17] =
 };  //  0               1                   2           3           4           5           6           7           8           9           10      11      12          13          14      15          16
 // clang-format on
 
-// возвращает приоритет элемента
 signed char Expression::Token::getPrior() const
 {
     signed char r = -1;
@@ -54,7 +53,6 @@ signed char Expression::Token::getPrior() const
     return r;
 }
 
-// проверить число на корректность с помощью конечного автомата
 bool Expression::checkFormula(const std::string &num)
 {
     States CurSt = st_start;
@@ -111,7 +109,6 @@ bool Expression::checkFormula(const std::string &num)
     return (CurSt == OK);
 }
 
-// распечатать список
 void Expression::print() const
 {
     std::cout << "-------------------------" << std::endl;
@@ -129,12 +126,11 @@ void Expression::print() const
     std::cout << "=========================" << std::endl;
 }
 
-// разбить строку на лексемы и преобразовать в список
 void Expression::prepare(const std::string &expr)
 {
     tokens.clear();
 
-    if (!checkFormula(expr)) { // выражение не прошло проверку конечным автоматом
+    if (!checkFormula(expr)) { // expression failed state machine check
         std::cerr << "\a\nError in expression" << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -143,7 +139,7 @@ void Expression::prepare(const std::string &expr)
         std::string ss(expr);
         size_t j = 0;
         TokenTypes tp;
-        bool unary; // функция "унарный минус"
+        bool unary; // "unary minus" function
 
         switch (expr[i]) {
         case '0':
@@ -193,9 +189,9 @@ void Expression::prepare(const std::string &expr)
             }
             ss[0] = expr[i];
             ss[1] = '\0';
-            if (unary) { // функция "унарный минус"
+            if (unary) { // "unary minus" function
                 tp = function;
-            } else { // операция "минус"
+            } else { // minus operation
                 tp = operate;
             }
             break;
@@ -210,11 +206,11 @@ void Expression::prepare(const std::string &expr)
             tp = function;
             break;
 
-        default: // ошибка в выражении
+        default: // error
             std::cerr << "\a\nError in expression: " << expr[i] << std::endl;
             exit(EXIT_FAILURE);
         }
-        tokens.emplace_back(Token(tp, ss)); // добавить лексему в список
+        tokens.emplace_back(Token(tp, ss)); // add token to list
     }
 
     std::cout << "\nString is divided into tokens" << std::endl;
@@ -225,10 +221,9 @@ void Expression::prepare(const std::string &expr)
     this->print();
 }
 
-// преобразует список в польскую инверсную запись
 void Expression::postfix()
 {
-    if (tokens.empty()) { // пустая строка
+    if (tokens.empty()) {
         std::cerr << "\a\nEmpty string" << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -239,16 +234,16 @@ void Expression::postfix()
     for (const auto &token : tokens) {
         Token tmp;
         switch (token.type) {
-        case number:              //число
-            ths.push_back(token); // помещаем число в выходную строку
+        case number:
+            ths.push_back(token); // put a number in the output string
             break;
 
-        case bracketL:             //открывающая скобка
-            tmp_stack.push(token); // кладём открывающую скобку в стек
+        case bracketL:
+            tmp_stack.push(token); // put the opening brace on the stack
             break;
 
-        case bracketR: // закрывающая скобка
-            do { // извлекаем из стека все операции до отрывающей скобки
+        case bracketR:
+            do { // pop all operations up to the opening parenthesis from the stack
                 if (tmp_stack.empty()) {
                     std::cerr << "\a\nUnpaired bracket ')'" << std::endl;
                     exit(EXIT_FAILURE);
@@ -261,18 +256,18 @@ void Expression::postfix()
             break;
 
         case operate:
-        case function: // операция или функция
-            // если стек не пуст, то извлекаем из стека в выходную строку все операции/функции
-            // с большим или равным приоритетом
+        case function:
+            // if the stack is not empty, then we extract from the stack to the output string all operations/functions
+            // with greater or equal priority
             while (!tmp_stack.empty() && tmp_stack.top().getPrior() >= token.getPrior()) {
                 ths.push_back(tmp_stack.top());
                 tmp_stack.pop();
             }
-            tmp_stack.push(token); // помещаем операцию/функцию в стек
+            tmp_stack.push(token); // push the operation/function onto the stack
             break;
         }
     }
-    // входная строка кончилась
+    // input line ended
     while (!tmp_stack.empty()) {
         const Token tmp = tmp_stack.top();
         tmp_stack.pop();
@@ -280,23 +275,22 @@ void Expression::postfix()
             std::cerr << "\a\nUnpaired bracket '('" << std::endl;
             exit(EXIT_FAILURE);
         } else {
-            ths.push_back(tmp); // переносим оставшиеся операции/функции в выходную строку
+            ths.push_back(tmp); // transfer the remaining operations/functions to the output string
         }
     }
     this->tokens.clear();
     for (const auto &tkn : ths) { this->tokens.push_back(tkn); }
 }
 
-// вычислить значение выражения
 std::string Expression::compute()
 {
-    if (tokens.empty()) { // входная строка пуста
+    if (tokens.empty()) {
         std::cerr << "\a\nEmpty string" << std::endl;
         exit(EXIT_FAILURE);
     }
 
     std::stack<Token> tmp_stack;
-    Value sv; // выражение-результат
+    Value sv; // result-expression
 
 #ifdef USE_VERYLONG
     Verylong result;
@@ -306,20 +300,20 @@ std::string Expression::compute()
     for (const auto &token : tokens) {
         time_t t1;
         time_t t2;
-        std::string d1; // операнд 1
-        std::string d2; // операнд 2
-        std::string d0; // операнд
+        std::string d1; // operand 1
+        std::string d2; // operand 2
+        std::string d0; // operand
         switch (token.type) {
-        case number: {             // число
-            tmp_stack.push(token); // помещаем число в стек
+        case number: {
+            tmp_stack.push(token); // push a number onto the stack
             break;
         }
-        case operate: { // операция
+        case operate: {
             if (!tmp_stack.empty()) {
                 d2 = tmp_stack.top().value;
                 tmp_stack.pop();
                 // cout << d2 << endl;
-            } else { // не хватает операндов
+            } else {
                 std::cerr << "\a\nNot enough operands" << std::endl;
                 exit(EXIT_FAILURE);
             }
@@ -327,7 +321,7 @@ std::string Expression::compute()
                 d1 = tmp_stack.top().value;
                 tmp_stack.pop();
                 // cout << d1 << endl;
-            } else { // не хватает операндов
+            } else {
                 std::cerr << "\a\nNot enough operands" << std::endl;
                 exit(EXIT_FAILURE);
             }
@@ -350,7 +344,7 @@ std::string Expression::compute()
                 d0 = tmp_stack.top().value;
                 tmp_stack.pop();
                 // cout << d0 << endl;
-            } else { // не хватает операндов
+            } else {
                 std::cerr << "\a\nNot enough operands" << std::endl;
                 exit(EXIT_FAILURE);
             }
@@ -410,5 +404,5 @@ std::string Expression::compute()
     }
     // const Token result = tmp_stack.top();
     // tmp_stack.pop();
-    return tmp_stack.top().value;
+    return (!tmp_stack.empty()) ? tmp_stack.top().value : std::string{"???"};
 }

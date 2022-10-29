@@ -7,7 +7,7 @@
 #include <map>
 #include <string>
 
-//! преобразование строки в число
+//! string to number conversion
 bool str2long(const char *str, long &val)
 {
     char *endptr = nullptr;
