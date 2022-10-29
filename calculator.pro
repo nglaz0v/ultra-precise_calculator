@@ -16,7 +16,7 @@ HEADERS += \
         verylong.h\
         identity.h
 
-unix {
-    YACCSOURCES = parser.yy
-    LEXSOURCES = scanner.ll
-}
+#unix {
+#    YACCSOURCES = parser.yy
+#    LEXSOURCES = scanner.ll
+#}

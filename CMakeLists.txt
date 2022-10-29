@@ -8,18 +8,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(BISON)
 find_package(FLEX)
 
-BISON_TARGET(MyParser parser.yy ${CMAKE_CURRENT_BINARY_DIR}/parser.cc)
-FLEX_TARGET(MyScanner scanner.ll ${CMAKE_CURRENT_BINARY_DIR}/scanner.cc)
+BISON_TARGET(MyParser syntax.y ${CMAKE_CURRENT_BINARY_DIR}/syntax.cc)
+FLEX_TARGET(MyScanner lexicon.l ${CMAKE_CURRENT_BINARY_DIR}/lexicon.cc)
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 
 add_executable(calculator
-    main.cpp
-    expression.cpp
-    expression.h
     identity.cpp
     identity.h
-    value.cpp
-    value.h
     verylong.cpp
     verylong.h
     ${BISON_MyParser_OUTPUTS}
