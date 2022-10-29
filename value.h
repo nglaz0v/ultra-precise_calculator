@@ -8,14 +8,14 @@ private:
 public:
     static unsigned int exactness;
 
-    explicit Value();
+    Value();
     explicit Value(const char *str);
     ~Value();
 
-    Value(const Value &V);
-    Value &operator=(const Value &V);
+    Value(const Value &);
+    Value &operator=(const Value &);
     Value(Value &&) noexcept = default;
-    Value &operator=(Value &&) noexcept = default;
+    Value &operator=(Value &&);
 
     friend Value operator+(Value d1, Value d2);
     friend Value operator-(Value d1, Value d2);

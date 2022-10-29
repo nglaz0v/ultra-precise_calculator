@@ -6,15 +6,24 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-void reverse(char *&str);                   //инвертирование строки
-void leading_zeros(char *&d1, char *&d2);   //выравнивание чисел добавлением нулей
-void abs(char *&d);                         //модуль числа
-bool strlt(const char *d1, const char *d2); // d1<d2
-bool strgt(const char *d1, const char *d2); // d1>d2
-void cut_zeros(char *&d);                   //усечение нулей перед десятичной точкой
-void first_zero(char *&d); //добавление нуля для чисел, начинающихся с точки '.'
-void del_point(char *&d);  //удаляет '.' в конце строки
-char *epsilon(unsigned int exact); //вычисление точности
+//! string inversion
+void reverse(char *&str);
+//! alignment of numbers by adding zeros
+void leading_zeros(char *&d1, char *&d2);
+//! the absolute value of a number
+void abs(char *&d);
+//! d1 < d2
+bool strlt(const char *d1, const char *d2);
+//! d1 > d2
+bool strgt(const char *d1, const char *d2);
+//! truncate zeros before decimal point
+void cut_zeros(char *&d);
+//! adding zero for numbers starting with a dot '.'
+void first_zero(char *&d);
+//! remove '.' at the end of the line
+void del_point(char *&d);
+//! precision calculation
+char *epsilon(unsigned int exact);
 
 unsigned int Value::exactness = 5;
 
@@ -64,10 +73,23 @@ Value &Value::operator=(const Value &V)
     return *this;
 }
 
+Value &Value::operator=(Value &&V)
+{
+    if (this == &V) return *this;
+    delete[] var;
+    if (V.var != nullptr) {
+        var = new char[strlen(V.var) + 1];
+        strcpy(var, V.var);
+    } else {
+        var = nullptr;
+    }
+    return *this;
+}
+
 Value operator+(Value d1, Value d2)
 {
     Value result;
-    bool minus = false; //результат отрицательный
+    bool minus = false; // result is negative
 
     char *d_1 = strchr(d1.var, '-');
     char *d_2 = strchr(d2.var, '-');
@@ -110,7 +132,7 @@ Value operator+(Value d1, Value d2)
     result.var[d1_len] = '\0';
     unsigned int i = 0;
     unsigned int j = 0;
-    bool overflow = false; //переполнение разряда
+    bool overflow = false;
     for (i = 0; i < d2_len; i++) {
         // cout << "i=" << i << endl;
 
@@ -152,7 +174,7 @@ Value operator+(Value d1, Value d2)
 
     del_point(result.var);
 
-    first_zero(result.var); //число начинается на '.'
+    first_zero(result.var); // number starts with '.'
 
     if (minus) result = -result;
 
@@ -163,7 +185,7 @@ Value operator+(Value d1, Value d2)
 Value operator-(Value d1, Value d2)
 {
     Value result;
-    bool minus = false; //результат отрицательный
+    bool minus = false; // result is negative
 
     char *d_1 = strchr(d1.var, '-');
     char *d_2 = strchr(d2.var, '-');
@@ -194,7 +216,7 @@ Value operator-(Value d1, Value d2)
     first_zero(d1.var);
     first_zero(d2.var);
 
-    bool negative = false; //результат отрицательный
+    bool negative = false; // result is negative
     if (strcmp(d1.var, d2.var) == -1) {
         char *d = new char[strlen(d2.var) + 1];
         strcpy(d, d2.var);
@@ -221,7 +243,7 @@ Value operator-(Value d1, Value d2)
     result.var[d1_len] = '\0';
     unsigned int i = 0;
     unsigned int j = 0;
-    bool overflow = false; //переполнение разряда
+    bool overflow = false;
     for (i = 0; i < d2_len; i++) {
         // cout << "i=" << i << endl;
 
@@ -247,7 +269,7 @@ Value operator-(Value d1, Value d2)
         }
     }
 
-    if ((result.var[d1_len - 1] == '0') && (d1_len > 1)) //отсечь лишние нули перед '.'
+    if ((result.var[d1_len - 1] == '0') && (d1_len > 1)) // strip extra zeros before '.'
     {
         reverse(result.var);
         cut_zeros(result.var);
@@ -270,7 +292,7 @@ Value operator-(Value d1, Value d2)
 
     del_point(result.var);
 
-    first_zero(result.var); //число начинается на '.'
+    first_zero(result.var); // number starts with '.'
 
     if (minus) result = -result;
 
@@ -327,13 +349,13 @@ Value operator*(Value d1, Value d2)
 
     result.var = new char[d1_len + d2_len + 1];
     strcpy(result.var, "0");
-    if ((strpbrk(d1.var, "123456789") == nullptr) || (strpbrk(d2.var, "123456789") == nullptr)) //ноль
+    if ((strpbrk(d1.var, "123456789") == nullptr) || (strpbrk(d2.var, "123456789") == nullptr)) // zero
         return result;
 
     char *n = nullptr;
     int pos1 = 0;
     n = strchr(d1.var, '.');
-    if (n != nullptr) //определяем количество знаков после '.'
+    if (n != nullptr) // determine the number of characters after '.'
     {
         pos1 = n - d1.var;
         pos1 = d1_len - pos1 - 1;
@@ -361,7 +383,7 @@ Value operator*(Value d1, Value d2)
     }
     // cout << d1.var << endl;
 
-    if (d1.var[0] == '0') { //убираем лишние нули
+    if (d1.var[0] == '0') { // remove extra zeros
         char *d = new char[d1_len + 1];
         strcpy(d, d1.var);
         delete[] d1.var;
@@ -377,7 +399,7 @@ Value operator*(Value d1, Value d2)
 
     int pos2 = 0;
     n = strchr(d2.var, '.');
-    if (n != nullptr) { //определяем количество знаков после '.'
+    if (n != nullptr) { // determine the number of characters after '.'
         pos2 = n - d2.var;
         pos2 = d2_len - pos2 - 1;
         if (d2.var[0] == '.') pos2 = d2_len - 1;
@@ -404,7 +426,7 @@ Value operator*(Value d1, Value d2)
     }
     // cout << d2.var << endl;
 
-    if (d2.var[0] == '0') { //убираем лишние нули
+    if (d2.var[0] == '0') { // remove extra zeros
         char *d = new char[d2_len + 1];
         strcpy(d, d2.var);
         delete[] d2.var;
@@ -418,7 +440,7 @@ Value operator*(Value d1, Value d2)
         d2_len = j;
     }
 
-    if ((d2_len > d1_len) || ((d2_len == d1_len) && (strcmp(d2.var, d1.var) == 1))) { // d2>d1
+    if ((d2_len > d1_len) || ((d2_len == d1_len) && (strcmp(d2.var, d1.var) == 1))) { // d2 > d1
         char *d = new char[d1_len + 1];
         strcpy(d, d1.var);
         delete[] d1.var;
@@ -441,7 +463,7 @@ Value operator*(Value d1, Value d2)
     j2.var = new char[3];
     prom.var = new char[d1_len + d2_len + 1];
     strcpy(prom.var, "");
-    char *zer = new char[d2_len + 1]; //для дописывания нулей
+    char *zer = new char[d2_len + 1]; // to add zeros
     strcpy(zer, "");
     reverse(d1.var);
     reverse(d2.var);
@@ -481,7 +503,7 @@ Value operator*(Value d1, Value d2)
             i1 = j1.var[0] - 0x30;
             i2 = j2.var[0] - 0x30;
 
-            if (strlen(j2.var) == 2) { //результат больше 10
+            if (strlen(j2.var) == 2) { // result is more than 10
                 j1.var[0] = j1.var[0] + j2.var[0] - 0x30;
                 j2.var[0] = j2.var[1];
                 j2.var[1] = '\0';
@@ -497,7 +519,7 @@ Value operator*(Value d1, Value d2)
     }
     delete[] zer;
 
-    /*	while (strcmp(counter.var,d2.var)!=0) //умножение
+    /*	while (strcmp(counter.var,d2.var)!=0) // multiplication
         {
             //cout << "strcmp=" << strcmp(counter.var,d2.var) << endl;
             result=result+d1;
@@ -509,7 +531,7 @@ Value operator*(Value d1, Value d2)
     pos = pos1 + pos2;
     // cout << "pos=" << pos << endl;
 
-    if (pos < strlen(result.var)) { //определяем положение '.' в результате
+    if (pos < strlen(result.var)) { // define position '.' as a result
         char *d = new char[strlen(result.var) + 1];
         strcpy(d, result.var);
         delete[] result.var;
@@ -577,7 +599,7 @@ Value operator/(Value d1, Value d2)
     strcpy(result.var, "");
     if (strpbrk(d1.var, "123456789") == nullptr) return Value("0");
     if (strpbrk(d2.var, "123456789") == nullptr) {
-        cerr << "\a\nDelenie na 0" << endl;
+        cerr << "\a\nDivision by zero" << endl;
         exit(1);
     }
 
@@ -911,7 +933,7 @@ Value operator^(Value d1, Value d2)
 {
     Value result;
     if (strchr(d2.var, '.') != nullptr) {
-        cerr << "\a\nPokazatel stepeni doljen bit tselim chislom" << endl;
+        cerr << "\a\nThe exponent must be an integer" << endl;
         exit(1);
     }
     Value counter;
@@ -919,8 +941,8 @@ Value operator^(Value d1, Value d2)
     strcpy(counter.var, "0");
     Value one("1");
     result = one;
-    bool rev = false;   //результат - дробь
-    bool minus = false; //результат отрицательный
+    bool rev = false;   // result is a fraction
+    bool minus = false; // result is negative
     if (strchr(d2.var, '-') != nullptr) {
         abs(d2.var);
         rev = true;
@@ -971,7 +993,7 @@ Value Value::factorial()
 {
     Value result;
     if (strchr(this->var, '.') != nullptr) {
-        cerr << "\a\nVirajenie pod factorialom doljno bit tselim chislom" << endl;
+        cerr << "\a\nThe expression under the factorial must be an integer" << endl;
         exit(1);
     }
     Value index;
@@ -1128,7 +1150,7 @@ Value Value::sqrt()
 {
     Value result;
     if (strchr(this->var, '-') != nullptr) {
-        cerr << "\a\nParametr funktsii kvadratnogo kornya doljen bit polojitelnim chislom" << endl;
+        cerr << "\a\nThe square root function parameter must be a positive number" << endl;
         exit(1);
     }
     Value eps(epsilon(Value::exactness));
@@ -1166,7 +1188,7 @@ Value Value::sqrt()
     return result;
 }
 
-void reverse(char *&str) //инвертирование строки
+void reverse(char *&str)
 {
     for (int i = 0, j = strlen(str) - 1; i < j; i++, j--) {
         char c = str[i];
@@ -1175,11 +1197,11 @@ void reverse(char *&str) //инвертирование строки
     }
 }
 
-void leading_zeros(char *&d1, char *&d2) //выравнивание чисел добавлением нулей
+void leading_zeros(char *&d1, char *&d2)
 {
     unsigned int d1_len = strlen(d1);
     unsigned int d2_len = strlen(d2);
-    if (strchr(d1, '.') == nullptr) { //добавление '.' в d1
+    if (strchr(d1, '.') == nullptr) { // adding '.' in d1
         char *d = new char[d1_len + 1];
         strcpy(d, d1);
         delete[] d1;
@@ -1189,7 +1211,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
         delete[] d;
         d1_len++;
     }
-    if (strchr(d2, '.') == nullptr) { //добавление '.' в d2
+    if (strchr(d2, '.') == nullptr) { // adding '.' in d2
         char *d = new char[d2_len + 1];
         strcpy(d, d2);
         delete[] d2;
@@ -1200,11 +1222,11 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
         d2_len++;
     }
 
-    //разбиение d1 и d2 на целые и дробные части
-    char *d1bp; //целая часть d1
-    char *d1ap; //дробная часть d1
-    char *d2bp; //целая часть d2
-    char *d2ap; //дробная часть d2
+    // splitting d1 and d2 into integer and fractional parts
+    char *d1bp; // integer part d1
+    char *d1ap; // fractional part d1
+    char *d2bp; // integer part d2
+    char *d2ap; // fractional part d2
 
     unsigned int d1bl = strcspn(d1, ".");
     unsigned int d1al = d1_len - d1bl - 1;
@@ -1235,7 +1257,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
     }
     d2ap[d2al] = '\0';
     // cout << "d2ap=" << d2ap << endl;
-    if (d1bl > d2bl) { //добавление нулей в d2bp
+    if (d1bl > d2bl) { // adding zeros to d2bp
         reverse(d2bp);
         char *d = new char[d2bl + 1];
         strcpy(d, d2bp);
@@ -1250,7 +1272,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
         // cout << "d1bp=" << d1bp << endl;
         // cout << "d2bp=" << d2bp << endl;
     }
-    if (d2bl > d1bl) { //добавление нулей в d1bp
+    if (d2bl > d1bl) { // adding zeros to d1bp
         reverse(d1bp);
         char *d = new char[d1bl + 1];
         strcpy(d, d1bp);
@@ -1265,7 +1287,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
         // cout << "d1bp=" << d1bp << endl;
         // cout << "d2bp=" << d2bp << endl;
     }
-    if (d1al > d2al) { //добавление нулей в d2ap
+    if (d1al > d2al) { // adding zeros to d2ap
         char *d = new char[d2al + 1];
         strcpy(d, d2ap);
         delete[] d2ap;
@@ -1278,7 +1300,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
         // cout << "d1ap=" << d1ap << endl;
         // cout << "d2ap=" << d2ap << endl;
     }
-    if (d2al > d1al) { //добавление нулей в d1ap
+    if (d2al > d1al) { // adding zeros to d1ap
         char *d = new char[d1al + 1];
         strcpy(d, d1ap);
         delete[] d1ap;
@@ -1311,7 +1333,7 @@ void leading_zeros(char *&d1, char *&d2) //выравнивание чисел �
     // cout << d2 << endl;
 }
 
-void abs(char *&d) //модуль числа
+void abs(char *&d)
 {
     unsigned res_len = strlen(d);
     if (strchr(d, '-') != nullptr) {
@@ -1334,7 +1356,7 @@ void abs(char *&d) //модуль числа
     // return d;
 }
 
-bool strlt(const char *d1, const char *d2) // d1<d2
+bool strlt(const char *d1, const char *d2)
 {
     if (strlen(d1) < strlen(d2)) return true;
     if (strlen(d1) > strlen(d2)) return false;
@@ -1349,7 +1371,7 @@ bool strlt(const char *d1, const char *d2) // d1<d2
     return false;
 }
 
-bool strgt(const char *d1, const char *d2) // d1>d2
+bool strgt(const char *d1, const char *d2)
 {
     if (strlen(d1) > strlen(d2)) return true;
     if (strlen(d1) < strlen(d2)) return false;
@@ -1364,7 +1386,7 @@ bool strgt(const char *d1, const char *d2) // d1>d2
     return false;
 }
 
-void cut_zeros(char *&d) //усечение нулей перед десятичной точкой
+void cut_zeros(char *&d)
 {
     unsigned int res_len = strlen(d);
     char *tmp = new char[res_len + 1];
@@ -1392,7 +1414,7 @@ void cut_zeros(char *&d) //усечение нулей перед десятич
     }
 }
 
-void first_zero(char *&d) //добавление нуля для чисел, начинающихся с точки '.'
+void first_zero(char *&d)
 {
     unsigned int res_len = strlen(d);
     if (d[0] == '.') {
@@ -1412,7 +1434,7 @@ void first_zero(char *&d) //добавление нуля для чисел, н�
 void del_point(char *&d)
 {
     unsigned int res_len = strlen(d);
-    if (d[res_len - 1] == '.') { //число оканчивается на '.'
+    if (d[res_len - 1] == '.') { // number ends with '.'
         char *tmp = new char[res_len];
         strncpy(tmp, d, res_len - 1);
         tmp[res_len - 1] = '\0';
@@ -1423,7 +1445,7 @@ void del_point(char *&d)
     }
 }
 
-char *epsilon(unsigned int exact) //вычисление точности
+char *epsilon(unsigned int exact)
 {
     char *retn;
     retn = new char[exact + 1 + 1 + 1];
@@ -1436,13 +1458,13 @@ char *epsilon(unsigned int exact) //вычисление точности
     return retn;
 }
 
-/*void leading_zeros(char* &d1, char* &d2) //выравнивание чисел добавлением нулей
+/*void leading_zeros(char* &d1, char* &d2)
 {
     short n;
     short max;
-    (strlen(d1)>strlen(d2))? max=strlen(d1) : max=strlen(d2); //какая из строк имеет большую длину
+    (strlen(d1)>strlen(d2))? max=strlen(d1) : max=strlen(d2); // which line is longer
     n=max/8+1;
-    if ((strchr(d1,'.')==NULL)) //добавление '.' в d1
+    if ((strchr(d1,'.')==NULL)) // adding '.' in d1
     {
         char* d=new char[n*8+1];
         strcpy(d,d1);
@@ -1461,7 +1483,7 @@ char *epsilon(unsigned int exact) //вычисление точности
         d1[strlen(d1)]='.';
         delete [] d;*/
 /*	}
-    if ((strchr(d2,'.')==NULL)) //добавление '.' в d2
+    if ((strchr(d2,'.')==NULL)) // adding '.' in d2
     {
         char* d=new char[n*8+1];
         strcpy(d,d2);
@@ -1483,12 +1505,12 @@ char *epsilon(unsigned int exact) //вычисление точности
 
 // cout << "--d1=" << d1 << endl;
 // cout << "--d2=" << d2 << endl;
-/*	if ((strchr(d1,'.')!=NULL) && (strchr(d2,'.')!=NULL)) //разбиение d1 и d2 на целые и дробные части
+/*	if ((strchr(d1,'.')!=NULL) && (strchr(d2,'.')!=NULL)) // splitting d1 and d2 into integer and fractional parts
     {
-        char* d1bp; //целая часть d1
-        char* d1ap; //дробная часть d1
-        char* d2bp; //целая часть d2
-        char* d2ap; //дробная часть d2
+        char* d1bp; // integer part d1
+        char* d1ap; // fractional part d1
+        char* d2bp; // integer part d2
+        char* d2ap; // fractional part d2
         if (strchr(d1,'.')!=NULL)
         {
             short d1bl=strcspn(d1,".");
@@ -1543,7 +1565,7 @@ char *epsilon(unsigned int exact) //вычисление точности
             d1[strlen(d1)]='.';
             delete [] d;*/
 /*		}
-        if (strlen(d1bp)>strlen(d2bp)) //добавление нулей в d2bp
+        if (strlen(d1bp)>strlen(d2bp)) // adding zeros to d2bp
         {
             reverse(d2bp);
             char* d=new char[n*8+1];
@@ -1559,7 +1581,7 @@ char *epsilon(unsigned int exact) //вычисление точности
             //cout << "d1bp=" << d1bp << endl;
             //cout << "d2bp=" << d2bp << endl;
         }
-        if (strlen(d2bp)>strlen(d1bp)) //добавление нулей в d1bp
+        if (strlen(d2bp)>strlen(d1bp)) // adding zeros to d1bp
         {
             reverse(d1bp);
             char* d=new char[n*8+1];
@@ -1575,7 +1597,7 @@ char *epsilon(unsigned int exact) //вычисление точности
             //cout << "d1bp=" << d1bp << endl;
             //cout << "d2bp=" << d2bp << endl;
         }
-        if (strlen(d1ap)>strlen(d2ap)) //добавление нулей в d2ap
+        if (strlen(d1ap)>strlen(d2ap)) // adding zeros to d2ap
         {
             char* d=new char[n*8+1];
             strcpy(d,d2ap);
@@ -1589,7 +1611,7 @@ char *epsilon(unsigned int exact) //вычисление точности
             //cout << "d1ap=" << d1ap << endl;
             //cout << "d2ap=" << d2ap << endl;
         }
-        if (strlen(d2ap)>strlen(d1ap)) //добавление нулей в d1ap
+        if (strlen(d2ap)>strlen(d1ap)) // adding zeros to d1ap
         {
             char* d=new char[n*8+1];
             strcpy(d,d1ap);
@@ -1644,7 +1666,7 @@ char *epsilon(unsigned int exact) //вычисление точности
 
     result.var=new char[2];
     strcpy(result.var,"0");
-    if ((strpbrk(d1.var,"123456789")==NULL) || (strpbrk(d2.var,"123456789")==NULL)) //ноль
+    if ((strpbrk(d1.var,"123456789")==NULL) || (strpbrk(d2.var,"123456789")==NULL)) // zero
         return result;
 
     Value one("1");
@@ -1666,7 +1688,7 @@ char *epsilon(unsigned int exact) //вычисление точности
         cout << "yes" << endl;
     }*/
 /*	int pos1=0;
-    if (strchr(d1.var,'.')!=NULL) //определяем количество знаков после '.'
+    if (strchr(d1.var,'.')!=NULL) // determine the number of characters after '.'
     {
         char* n=strchr(d1.var,'.');
         pos1=n-d1.var;
@@ -1695,7 +1717,7 @@ char *epsilon(unsigned int exact) //вычисление точности
     }
     //cout << d1.var << endl;
 
-    if (d1.var[0]=='0') //убираем лишние нули
+    if (d1.var[0]=='0') // remove extra zeros
     {
         char* d=new char[strlen(d1.var)+1];
         strcpy(d,d1.var);
@@ -1713,7 +1735,7 @@ char *epsilon(unsigned int exact) //вычисление точности
     }
 
     int pos2=0;
-    if (strchr(d2.var,'.')!=NULL) //определяем количество знаков после '.'
+    if (strchr(d2.var,'.')!=NULL) // determine the number of characters after '.'
     {
         char* n=strchr(d2.var,'.');
         pos2=n-d2.var;
@@ -1742,7 +1764,7 @@ char *epsilon(unsigned int exact) //вычисление точности
     }
     //cout << d2.var << endl;
 
-    if (d2.var[0]=='0') //убираем лишние нули
+    if (d2.var[0]=='0') // remove extra zeros
     {
         char* d=new char[strlen(d2.var)+1];
         strcpy(d,d2.var);
@@ -1759,7 +1781,7 @@ char *epsilon(unsigned int exact) //вычисление точности
         delete [] d;
     }
 
-    if ((strlen(d2.var)>strlen(d1.var)) || ((strlen(d2.var)==strlen(d1.var)) && (strcmp(d2.var,d1.var)==1))) //d2>d1
+    if ((strlen(d2.var)>strlen(d1.var)) || ((strlen(d2.var)==strlen(d1.var)) && (strcmp(d2.var,d1.var)==1))) // d2 > d1
     {
         char* d=new char[strlen(d1.var)+1];
         strcpy(d,d1.var);
@@ -1776,7 +1798,7 @@ char *epsilon(unsigned int exact) //вычисление точности
     //cout << "d22=" << d2.var << endl;
 
 
-    while (strcmp(counter.var,d2.var)!=0) //умножение
+    while (strcmp(counter.var,d2.var)!=0) // multiplication
     {
         //cout << "strcmp=" << strcmp(counter.var,d2.var) << endl;
         result=result+d1;
@@ -1795,7 +1817,7 @@ char *epsilon(unsigned int exact) //вычисление точности
 /*	pos=pos1+pos2;
     //cout << "pos=" << pos << endl;
 
-    if (pos<strlen(result.var)) //определяем положение '.' в результате
+    if (pos<strlen(result.var)) // define position '.' as a result
     {
         char* d=new char[strlen(result.var)+1];
         strcpy(d,result.var);
