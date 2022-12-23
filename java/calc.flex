@@ -1,13 +1,3 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 2000 Gerwin Klein <lsf@jflex.de>                          *
- * All rights reserved.                                                    *
- *                                                                         *
- * Thanks to Larry Bell and Bob Jamison for suggestions and comments.      *
- *                                                                         *
- * License: BSD                                                            *
- *                                                                         *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
 %%
 
 %byaccj
@@ -32,8 +22,16 @@ NL  = \n | \r | \r\n
 "*" | 
 "/" | 
 "^" | 
+"!" | 
 "(" | 
-")"    { return (int) yycharat(0); }
+")" | 
+"="    { return (int) yycharat(0); }
+
+/* functions */
+"sin"  { return Parser.SIN; }
+"cos"  { return Parser.COS; }
+"tan"  { return Parser.TAN; }
+"sqrt" { return Parser.SQRT; }
 
 /* newline */
 {NL}   { return Parser.NL; }

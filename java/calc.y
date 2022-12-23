@@ -1,22 +1,10 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 2001 Gerwin Klein <lsf@jflex.de>                          *
- * All rights reserved.                                                    *
- *                                                                         *
- * This is a modified version of the example from                          *
- *   http://www.lincom-asg.com/~rjamison/byacc/                            *
- *                                                                         *
- * Thanks to Larry Bell and Bob Jamison for suggestions and comments.      *
- *                                                                         *
- * License: BSD                                                            *
- *                                                                         *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
 %{
   import java.io.*;
 %}
       
 %token NL          /* newline  */
 %token <dval> NUM  /* a number */
+%token SIN COS TAN SQRT
 
 %type <dval> exp
 
@@ -44,6 +32,10 @@ exp:     NUM                { $$ = $1; }
        | '-' exp  %prec NEG { $$ = -$2; }
        | exp '^' exp        { $$ = Math.pow($1, $3); }
        | '(' exp ')'        { $$ = $2; }
+       | SIN '(' exp ')'  { $$ = Math.sin($3); }
+       | COS '(' exp ')'  { $$ = Math.cos($3); }
+       | TAN '(' exp ')'  { $$ = Math.tan($3); }
+       | SQRT '(' exp ')' { $$ = Math.sqrt($3); }
        ;
 
 %%
@@ -89,7 +81,7 @@ exp:     NUM                { $$ = $1; }
       System.out.println("[Quit with CTRL-D]");
       System.out.print("Expression: ");
       interactive = true;
-	    yyparser = new Parser(new InputStreamReader(System.in));
+      yyparser = new Parser(new InputStreamReader(System.in));
     }
 
     yyparser.yyparse();
