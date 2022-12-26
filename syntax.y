@@ -24,16 +24,15 @@ struct symbol_entry *get_symbol(char *name) {return NULL;}
     float real;
 }
 
-%start Calculator
-
 %token <real> NUM
-%token ASIGN
+%token PLUS MINUS MULT DIV POW
+// %token ASIGN
+%token EOL
 %token LB RB
 %token SIN COS TAN SQRT FACT
 // %token <str> VAR
 
-%type <real> Calculator
-%type <real> Expression
+%type <real> exp
 
 %left PLUS MINUS
 %left MULT DIV
@@ -41,25 +40,28 @@ struct symbol_entry *get_symbol(char *name) {return NULL;}
 %left UMINUS
 
 %%
-Calculator: { $$ = 0; }
-    | Calculator Expression '\n' { printf("%f\n", $2); }
-    | Calculator '\n'
+input :
+    | input line
     ;
-Expression: NUM { $$=$1; }
+
+line : EOL
+    | exp EOL { printf("%f\n", $1); }
+
+exp: NUM { $$=$1; }
 //    | VAR { $$ = get_symbol($1)->value; }
-//    | VAR ASIGN Expression { put_symbol($1, $3); $$ = $3; }
-    | Expression PLUS Expression { $$ = $1 + $3; }
-    | Expression MINUS Expression { $$ = $1 - $3; }
-    | Expression MULT Expression { $$ = $1 * $3; }
-    | Expression DIV Expression { $$ = $1 / $3; }
-    | Expression POW Expression { $$ = pow($1, $3); }
-    | MINUS Expression %prec UMINUS { $$ = -$2; }
-    | LB Expression RB { $$ = $2; }
-    | SIN LB Expression RB { $$ = sin($3); }
-    | COS LB Expression RB { $$ = cos($3); }
-    | TAN LB Expression RB { $$ = tan($3); }
-    | SQRT LB Expression RB { $$ = sqrt($3); }
-    | FACT LB Expression RB { $$ = 1; for (unsigned i = 1; i <= unsigned($3); ++i) $$ *= i; }
+//    | VAR ASIGN exp { put_symbol($1, $3); $$ = $3; }
+    | exp PLUS exp { $$ = $1 + $3; }
+    | exp MINUS exp { $$ = $1 - $3; }
+    | exp MULT exp { $$ = $1 * $3; }
+    | exp DIV exp { $$ = $1 / $3; }
+    | exp POW exp { $$ = pow($1, $3); }
+    | MINUS exp %prec UMINUS { $$ = -$2; }
+    | LB exp RB { $$ = $2; }
+    | SIN LB exp RB { $$ = sin($3); }
+    | COS LB exp RB { $$ = cos($3); }
+    | TAN LB exp RB { $$ = tan($3); }
+    | SQRT LB exp RB { $$ = sqrt($3); }
+    | FACT LB exp RB { $$ = 1; for (long i = 1; i <= long($3); ++i) $$ *= i; }
     ;
 %%
 

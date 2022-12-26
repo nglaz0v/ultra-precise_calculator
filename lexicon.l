@@ -15,7 +15,7 @@ DIGIT [0-9]
 %%
 {DIGIT}+               { yylval.real = atol(yytext); return NUM; }
 {DIGIT}+("."{DIGIT}+)? { yylval.real = atof(yytext); return NUM; }
-"="     { return ASIGN; }
+ /*"="     { return ASIGN; } */
 "("     { return LB; }
 ")"     { return RB; }
 sin     { return SIN; }
@@ -29,6 +29,6 @@ sqrt    { return SQRT; }
 "/"     { return DIV; }
 "^"     { return POW; }
 "!"     { return FACT; }
-\n      { nlines++; return '\n'; }
+\n      { nlines++; return EOL; }
 .
 %%
