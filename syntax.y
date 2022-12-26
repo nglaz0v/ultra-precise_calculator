@@ -4,7 +4,7 @@
 
 extern int yylex(void);
 // extern char *yytext;
-extern int nlines;
+// extern int nlines;
 extern FILE *yyin;
 
 void yyerror(const char *msg);
@@ -36,8 +36,8 @@ struct symbol_entry *get_symbol(char *name) {return NULL;}
 
 %left PLUS MINUS
 %left MULT DIV
-%left POW
-%left UMINUS
+%right POW
+%precedence UNARY
 
 %%
 input :
@@ -47,15 +47,16 @@ input :
 line : EOL
     | exp EOL { printf("%f\n", $1); }
 
-exp: NUM { $$=$1; }
+exp: NUM { $$ = $1; }
 //    | VAR { $$ = get_symbol($1)->value; }
 //    | VAR ASIGN exp { put_symbol($1, $3); $$ = $3; }
-    | exp PLUS exp { $$ = $1 + $3; }
+    | exp PLUS exp  { $$ = $1 + $3; }
     | exp MINUS exp { $$ = $1 - $3; }
-    | exp MULT exp { $$ = $1 * $3; }
-    | exp DIV exp { $$ = $1 / $3; }
-    | exp POW exp { $$ = pow($1, $3); }
-    | MINUS exp %prec UMINUS { $$ = -$2; }
+    | exp MULT exp  { $$ = $1 * $3; }
+    | exp DIV exp   { $$ = $1 / $3; }
+    | PLUS exp %prec UNARY  { $$ = + $2; }
+    | MINUS exp %prec UNARY { $$ = - $2; }
+    | exp POW exp   { $$ = pow($1, $3); }
     | LB exp RB { $$ = $2; }
     | SIN LB exp RB { $$ = sin($3); }
     | COS LB exp RB { $$ = cos($3); }

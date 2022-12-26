@@ -6,7 +6,7 @@
 #else
 #include "syntax.h"
 #endif
-int nlines = 0;
+/* int nlines = 0; */
 %}
 
 DIGIT [0-9]
@@ -15,7 +15,7 @@ DIGIT [0-9]
 %%
 {DIGIT}+               { yylval.real = atol(yytext); return NUM; }
 {DIGIT}+("."{DIGIT}+)? { yylval.real = atof(yytext); return NUM; }
- /*"="     { return ASIGN; } */
+ /* "="     { return ASIGN; } */
 "("     { return LB; }
 ")"     { return RB; }
 sin     { return SIN; }
@@ -29,6 +29,7 @@ sqrt    { return SQRT; }
 "/"     { return DIV; }
 "^"     { return POW; }
 "!"     { return FACT; }
-\n      { nlines++; return EOL; }
-.
+\n      { /* nlines++; */ return EOL; }
+[\t ]*  /* throw away whitespace */
+.       { /* yyerror("Illegal character"); */ return EOL; }
 %%
