@@ -28,8 +28,7 @@ struct symbol_entry *get_symbol(char *name) {return NULL;}
 
 %token <real> NUM
 %token ASIGN
-%token PAA
-%token PAC
+%token LB RB
 %token SIN COS TAN SQRT FACT
 // %token <str> VAR
 
@@ -55,12 +54,12 @@ Expression: NUM { $$=$1; }
     | Expression DIV Expression { $$ = $1 / $3; }
     | Expression POW Expression { $$ = pow($1, $3); }
     | MINUS Expression %prec UMINUS { $$ = -$2; }
-    | PAA Expression PAC { $$ = $2; }
-    | SIN PAA Expression PAC { $$ = sin($3); }
-    | COS PAA Expression PAC { $$ = cos($3); }
-    | TAN PAA Expression PAC { $$ = tan($3); }
-    | SQRT PAA Expression PAC { $$ = sqrt($3); }
-    | FACT PAA Expression PAC { $$ = 1; for (unsigned i = 1; i <= unsigned($3); ++i) $$ *= i; }
+    | LB Expression RB { $$ = $2; }
+    | SIN LB Expression RB { $$ = sin($3); }
+    | COS LB Expression RB { $$ = cos($3); }
+    | TAN LB Expression RB { $$ = tan($3); }
+    | SQRT LB Expression RB { $$ = sqrt($3); }
+    | FACT LB Expression RB { $$ = 1; for (unsigned i = 1; i <= unsigned($3); ++i) $$ *= i; }
     ;
 %%
 
