@@ -1,42 +1,46 @@
 %{
   import java.io.*;
 %}
-      
-%token NL          /* newline  */
-%token <dval> NUM  /* a number */
-%token SIN COS TAN SQRT
+
+%token <dval> NUM
+%token PLUS MINUS MULT DIV POW
+// %token ASIGN
+%token NL
+%token LB RB
+%token SIN COS TAN SQRT FACT
 
 %type <dval> exp
 
-%left '-' '+'
-%left '*' '/'
-%left NEG          /* negation--unary minus */
-%right '^'         /* exponentiation        */
-      
+%left PLUS MINUS
+%left MULT DIV
+%left NEG
+%right POW
+
 %%
 
-input:   /* empty string */
-       | input line
-       ;
-      
-line:    NL      { if (interactive) System.out.print("Expression: "); }
-       | exp NL  { System.out.println(" = " + $1); 
-                   if (interactive) System.out.print("Expression: "); }
-       ;
-      
-exp:     NUM                { $$ = $1; }
-       | exp '+' exp        { $$ = $1 + $3; }
-       | exp '-' exp        { $$ = $1 - $3; }
-       | exp '*' exp        { $$ = $1 * $3; }
-       | exp '/' exp        { $$ = $1 / $3; }
-       | '-' exp  %prec NEG { $$ = -$2; }
-       | exp '^' exp        { $$ = Math.pow($1, $3); }
-       | '(' exp ')'        { $$ = $2; }
-       | SIN '(' exp ')'  { $$ = Math.sin($3); }
-       | COS '(' exp ')'  { $$ = Math.cos($3); }
-       | TAN '(' exp ')'  { $$ = Math.tan($3); }
-       | SQRT '(' exp ')' { $$ = Math.sqrt($3); }
-       ;
+input: /* empty string */
+    | input line
+    ;
+
+line: NL      { if (interactive) System.out.print("Expression: "); }
+    | exp NL  { System.out.println(" = " + $1); 
+                if (interactive) System.out.print("Expression: "); }
+    ;
+
+exp: NUM            { $$ = $1; }
+    | exp PLUS exp  { $$ = $1 + $3; }
+    | exp MINUS exp { $$ = $1 - $3; }
+    | exp MULT exp  { $$ = $1 * $3; }
+    | exp DIV exp   { $$ = $1 / $3; }
+    | MINUS exp %prec NEG { $$ = -$2; }
+    | exp POW exp   { $$ = Math.pow($1, $3); }
+    | LB exp RB     { $$ = $2; }
+    | SIN LB exp RB { $$ = Math.sin($3); }
+    | COS LB exp RB { $$ = Math.cos($3); }
+    | TAN LB exp RB { $$ = Math.tan($3); }
+    | SQRT LB exp RB { $$ = Math.sqrt($3); }
+    | FACT LB exp RB { $$ = 1; for (long i = 1; i <= (long)$3; ++i) $$ *= i; }
+    ;
 
 %%
 

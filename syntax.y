@@ -40,11 +40,11 @@ struct symbol_entry *get_symbol(char *name) {return NULL;}
 %precedence UNARY
 
 %%
-input :
+input:
     | input line
     ;
 
-line : EOL
+line: EOL
     | exp EOL { printf("%f\n", $1); }
 
 exp: NUM { $$ = $1; }
@@ -62,7 +62,7 @@ exp: NUM { $$ = $1; }
     | COS LB exp RB { $$ = cos($3); }
     | TAN LB exp RB { $$ = tan($3); }
     | SQRT LB exp RB { $$ = sqrt($3); }
-    | FACT LB exp RB { $$ = 1; for (long i = 1; i <= long($3); ++i) $$ *= i; }
+    | FACT LB exp RB { $$ = 1; for (long i = 1; i <= (long)$3; ++i) $$ *= i; }
     ;
 %%
 

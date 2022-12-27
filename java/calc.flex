@@ -17,21 +17,21 @@ NL  = \n | \r | \r\n
 %%
 
 /* operators */
-"+" | 
-"-" | 
-"*" | 
-"/" | 
-"^" | 
-"!" | 
-"(" | 
-")" | 
-"="    { return (int) yycharat(0); }
+"+" { return Parser.PLUS; }
+"-" { return Parser.MINUS; }
+"*" { return Parser.MULT; }
+"/" { return Parser.DIV; }
+"^" { return Parser.POW; }
+"(" { return Parser.LB; }
+")" { return Parser.RB; }
+"=" { return (int) yycharat(0); }
 
 /* functions */
 "sin"  { return Parser.SIN; }
 "cos"  { return Parser.COS; }
 "tan"  { return Parser.TAN; }
 "sqrt" { return Parser.SQRT; }
+"!"    { return Parser.FACT; }
 
 /* newline */
 {NL}   { return Parser.NL; }
