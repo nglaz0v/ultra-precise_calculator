@@ -1,11 +1,7 @@
 %option noyywrap
 
 %{
-#ifdef __cplusplus
-#include "syntax.hh"
-#else
-#include "syntax.h"
-#endif
+#include "parser.h"
 /* int nlines = 0; */
 %}
 

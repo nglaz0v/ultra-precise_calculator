@@ -8,8 +8,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(BISON)
 find_package(FLEX)
 
-BISON_TARGET(MyParser syntax.y ${CMAKE_CURRENT_BINARY_DIR}/syntax.cc)
-FLEX_TARGET(MyScanner lexicon.l ${CMAKE_CURRENT_BINARY_DIR}/lexicon.cc)
+BISON_TARGET(MyParser syntax.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cc
+             COMPILE_FLAGS "--html --graph"
+             DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser.h)
+FLEX_TARGET(MyScanner lexicon.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cc)
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 
 include_directories(..)
