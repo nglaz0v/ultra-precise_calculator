@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "verylong.h"
-
 extern int yylex(void);
 // extern char *yytext;
 // extern int nlines;
@@ -20,13 +18,17 @@ struct symbol_entry *get_symbol(char *name) {return NULL;}
 */
 %}
 
-%union
+%code requires {
+#include "verylong.h"
+}
+
+/*%union
 {
 //    char* str;
     float real;
-}
+}*/
 
-// %define api.value.type {Verylong}
+%define api.value.type {float}
 
 %token NUM
 %token PLUS MINUS MULT DIV POW
@@ -36,7 +38,7 @@ struct symbol_entry *get_symbol(char *name) {return NULL;}
 %token SIN COS TAN SQRT FACT
 // %token <str> VAR
 
-%type <real> exp NUM
+// %type <real> exp NUM
 
 %left PLUS MINUS
 %left MULT DIV

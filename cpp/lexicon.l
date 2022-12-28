@@ -13,8 +13,8 @@ DIGIT [0-9]
  /* ID [a-zA-Z][a-zA-Z0-9_]* */
 
 %%
-{DIGIT}+               { yylval.real = atol(yytext); return NUM; }
-{DIGIT}+("."{DIGIT}+)? { yylval.real = atof(yytext); return NUM; }
+{DIGIT}+               { yylval/*.real*/ = atol(yytext); return NUM; }
+{DIGIT}+("."{DIGIT}+)? { yylval/*.real*/ = atof(yytext); return NUM; }
  /* "="     { return ASIGN; } */
 "("     { return LB; }
 ")"     { return RB; }
