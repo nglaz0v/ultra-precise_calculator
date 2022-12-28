@@ -13,10 +13,10 @@ FLEX_TARGET(MyScanner lexicon.l ${CMAKE_CURRENT_BINARY_DIR}/lexicon.cc)
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 
 add_executable(calculator
-    identity.cpp
-    identity.h
-    verylong.cpp
-    verylong.h
+    # identity.cpp
+    # identity.h
+    # verylong.cpp
+    # verylong.h
     ${BISON_MyParser_OUTPUTS}
     ${FLEX_MyScanner_OUTPUTS}
 )

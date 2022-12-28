@@ -5,7 +5,7 @@ simple console calculator
 
 ### 1. calculator.pro (qmake)
 
-### 2. CMakeLists.txt (cmake + flex + bison)
+### 2. cpp/CMakeLists.txt (cmake + flex + bison)
 
 #### (3). java/make.sh (jflex + byaccj)
 
