@@ -3,9 +3,11 @@ simple console calculator
 
 ## Two types of project files
 
-### 1. calculator.pro (qmake)
+### 1a. calculator.pro (qmake)
 
-### 2. cpp/CMakeLists.txt (cmake + flex + bison)
+### 1b. CMakeLists.txt (cmake)
+
+#### (2). cpp/CMakeLists.txt (cmake + flex + bison)
 
 #### (3). java/make.sh (jflex + byaccj)
 
