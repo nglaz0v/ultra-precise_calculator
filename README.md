@@ -4,12 +4,20 @@ simple console calculator
 ## Two types of project files
 
 ### 1a. calculator.pro (qmake)
+`mkdir build && cd build && qmake .. && make DEFINES=-DUSE_VALUE`
 
 ### 1b. CMakeLists.txt (cmake)
+`mkdir build && cd build && cmake .. && make CXX_DEFINES=-DUSE_VALUE`
 
 #### (2). cpp/CMakeLists.txt (cmake + flex + bison)
 
 #### (3). java/make.sh (jflex + byaccj)
+
+*For 1a and 1b you must choose one of the following macros:*
+
+- USE_VALUE
+- USE_VERYLONG - Very Long Integer Class from *SymbolicC++ : An object oriented computer algebra system written in C++* by Tan Kiat Shi, Willi-Hans Steeb, Yorick Hardy
+- USE_BIGINT - unsigned integers using a fixed number of bits from *C++ Cookbook* by D. Ryan Stephens, Christopher Diggins, Jonathan Turkanis, Jeff Cogswell
 
 ![calculator](https://user-images.githubusercontent.com/20319403/118359144-bc0cc580-b58a-11eb-83e1-3d3f0aabc0d8.png)
 

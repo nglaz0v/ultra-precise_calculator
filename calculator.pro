@@ -14,7 +14,9 @@ HEADERS += \
         expression.h\
         value.h\
         verylong.h\
-        identity.h
+        identity.h \
+        bitset_arithmetic.hpp \
+        big_int.hpp
 
 #unix {
 #    YACCSOURCES = parser.yy

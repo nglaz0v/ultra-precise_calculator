@@ -4,12 +4,20 @@
 #include <ctime>
 #include <iostream>
 #include <stack>
-#define USE_VERYLONG
-#ifndef USE_VERYLONG
+#if (defined USE_VALUE) || (defined USE_VERYLONG) || (defined USE_BIGINT)
+#ifdef USE_VALUE
 #include "value.h"
-#else // USE_VERYLONG
+#endif // USE_VALUE
+#ifdef USE_VERYLONG
 #include "verylong.h"
-#endif // !USE_VERYLONG
+#endif // USE_VERYLONG
+#ifdef USE_BIGINT
+// TODO: BigInt support
+#include "big_int.hpp"
+#endif // USE_BIGINT
+#else
+#error "Choose number type: USE_VALUE | USE_VERYLONG | USE_BIGINT"
+#endif // USE_VALUE || USE_VERYLONG || USE_BIGINT
 
 // clang-format off
 const Expression::States Expression::SM[16][17] =
@@ -79,7 +87,7 @@ bool str2long(const char *str, long &val)
 
 void Expression::setup()
 {
-#ifndef USE_VERYLONG
+#ifdef USE_VALUE
     std::string str;
     long val = 0;
     bool input = false;
@@ -89,7 +97,7 @@ void Expression::setup()
         input = str2long(str.c_str(), val);
     } while (!input);
     Value::exactness = static_cast<unsigned int>(val);
-#endif // !USE_VERYLONG
+#endif // USE_VALUE
 }
 
 bool Expression::checkFormula(const std::string &num)
@@ -323,11 +331,15 @@ void Expression::postfix()
 
 std::string Expression::compute()
 {
-#ifndef USE_VERYLONG
+#ifdef USE_VALUE
     using value_t = Value;
-#else  // USE_VERYLONG
+#endif // USE_VALUE
+#ifdef USE_VERYLONG
     using value_t = Verylong;
-#endif // !USE_VERYLONG
+#endif // USE_VERYLONG
+#ifdef USE_BIGINT
+    using value_t = BigInt<1024>;
+#endif // USE_BIGINT
 
     if (tokens.empty()) {
         std::cerr << "\a\nEmpty string" << std::endl;
