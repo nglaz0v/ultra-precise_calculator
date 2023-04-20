@@ -16,8 +16,8 @@ public:
 
     Value(const Value &);
     Value &operator=(const Value &);
-    Value(Value &&) noexcept = default;
-    Value &operator=(Value &&);
+    Value(Value &&) noexcept;
+    Value &operator=(Value &&) noexcept;
 
     friend Value operator+(Value d1, Value d2);
     friend Value operator-(Value d1, Value d2);

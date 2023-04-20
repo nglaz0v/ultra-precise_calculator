@@ -53,6 +53,12 @@ Value::Value(const Value &V)
     }
 }
 
+Value::Value(Value &&V) noexcept
+{
+    var = V.var;
+    V.var = nullptr;
+}
+
 Value::~Value()
 {
     if (var != nullptr) {
@@ -74,16 +80,12 @@ Value &Value::operator=(const Value &V)
     return *this;
 }
 
-Value &Value::operator=(Value &&V)
+Value &Value::operator=(Value &&V) noexcept
 {
     if (this == &V) return *this;
     delete[] var;
-    if (V.var != nullptr) {
-        var = new char[strlen(V.var) + 1];
-        strcpy(var, V.var);
-    } else {
-        var = nullptr;
-    }
+    var = V.var;
+    V.var = nullptr;
     return *this;
 }
 
