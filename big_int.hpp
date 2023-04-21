@@ -7,15 +7,11 @@
 #include <sstream>
 #include <vector>
 template <unsigned int N> class BigInt {
-    typedef BigInt self;
+    using self = BigInt;
 
-  public:
+public:
     BigInt()
         : bits()
-    {
-    }
-    BigInt(const self &x)
-        : bits(x.bits)
     {
     }
     BigInt(unsigned long x)
@@ -34,6 +30,11 @@ template <unsigned int N> class BigInt {
         : BigInt(std::stoul(x))
     {
     }
+    ~BigInt() = default;
+    BigInt(const BigInt &) = default;
+    BigInt &operator=(const BigInt &) = default;
+    BigInt(BigInt &&) noexcept = default;
+    BigInt &operator=(BigInt &&) noexcept = default;
     // public functions
     bool operator[](int n) const { return bits[n]; }
     unsigned long toUlong() const { return bits.to_ulong(); }
@@ -77,18 +78,14 @@ template <unsigned int N> class BigInt {
     {
         bool carry = false;
         bits[0] = fullAdder(bits[0], 1, carry);
-        for (int i = 1; i < N; i++) {
-            bits[i] = fullAdder(bits[i], 0, carry);
-        }
+        for (int i = 1; i < N; i++) { bits[i] = fullAdder(bits[i], 0, carry); }
         return *this;
     }
     self &operator--()
     {
         bool borrow = false;
         bits[0] = fullSubtractor(bits[0], 1, borrow);
-        for (int i = 1; i < N; i++) {
-            bits[i] = fullSubtractor(bits[i], 0, borrow);
-        }
+        for (int i = 1; i < N; i++) { bits[i] = fullSubtractor(bits[i], 0, borrow); }
         return *this;
     }
     self &operator+=(const self &x)
@@ -154,7 +151,7 @@ template <unsigned int N> class BigInt {
     friend bool operator>=(const self &x, const self &y) { return bitsetGtEq(x.bits, y.bits); }
     friend bool operator<=(const self &x, const self &y) { return bitsetLtEq(x.bits, y.bits); }
 
-  private:
+private:
     std::bitset<N> bits;
 };
 

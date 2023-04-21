@@ -3,6 +3,8 @@ CONFIG += console c++14
 CONFIG -= app_bundle
 CONFIG -= qt
 
+DEFINES += USE_VALUE
+
 SOURCES += \
         main.cpp\
         expression.cpp\
