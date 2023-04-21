@@ -3,6 +3,9 @@
 
 #include "bitset_arithmetic.hpp" // Recipe 11.20
 #include <bitset>
+#include <iterator>
+#include <sstream>
+#include <vector>
 template <unsigned int N> class BigInt {
     typedef BigInt self;
 
@@ -27,9 +30,26 @@ template <unsigned int N> class BigInt {
         : bits(x)
     {
     }
+    explicit BigInt(const std::string &x)
+        : BigInt(std::stoul(x))
+    {
+    }
     // public functions
     bool operator[](int n) const { return bits[n]; }
     unsigned long toUlong() const { return bits.to_ulong(); }
+    operator std::string() const
+    {
+        auto x = *this;
+        if (x == 0) { return std::string("0"); }
+        std::vector<int> v;
+        while (x > 0) {
+            v.push_back((x % 10).toUlong());
+            x /= 10;
+        }
+        std::stringstream str;
+        copy(v.rbegin(), v.rend(), std::ostream_iterator<int>(str, ""));
+        return str.str();
+    }
     // operators
     self &operator<<=(unsigned int n)
     {
@@ -114,6 +134,7 @@ template <unsigned int N> class BigInt {
         bits ^= x.bits;
         return *this;
     }
+    self operator-() const { return self(~bits) + self(1); }
     // friend functions
     friend self operator<<(self x, unsigned int n) { return x <<= n; }
     friend self operator>>(self x, unsigned int n) { return x >>= n; }

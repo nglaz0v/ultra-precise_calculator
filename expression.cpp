@@ -12,7 +12,6 @@
 #include "verylong.h"
 #endif // USE_VERYLONG
 #ifdef USE_BIGINT
-// TODO: BigInt support
 #include "big_int.hpp"
 #endif // USE_BIGINT
 #else
