@@ -349,10 +349,10 @@ std::string Expression::compute()
     std::stack<Token> tmp_stack;
     value_t sv; // result-expression
 
-#ifdef USE_VERYLONG
-    Verylong result;
-    Verylong i;
-#endif // USE_VERYLONG
+#ifndef USE_VALUE
+    value_t result;
+    value_t i;
+#endif // !USE_VALUE
 
     for (const auto &token : tokens) {
         time_t t1;
@@ -387,11 +387,12 @@ std::string Expression::compute()
             case '-': sv = value_t(d1) - value_t(d2); break;
             case '*': sv = value_t(d1) * value_t(d2); break;
             case '/': sv = value_t(d1) / value_t(d2); break;
-#ifndef USE_VERYLONG
+#ifdef USE_VALUE
             case '^': sv = value_t(d1) ^ value_t(d2); break;
-#else  // USE_VERYLONG
+#endif // USE_VALUE
+#ifdef USE_VERYLONG
             case '^': sv = pow(value_t(d1), value_t(d2)); break;
-#endif // !USE_VERYLONG
+#endif // USE_VERYLONG
             }
             tmp_stack.push(Token(number, std::string(sv).c_str()));
             break;
@@ -411,45 +412,49 @@ std::string Expression::compute()
                 sv = -sv;
                 break;
             case '!': sv = value_t(d0); t1 = time(nullptr);
-#ifndef USE_VERYLONG
+#ifdef USE_VALUE
                 sv.factorial();
-#else  // USE_VERYLONG
-                result = Verylong("1");
-                for (i = Verylong("2"); i <= sv; ++i) { result *= i; }
+#else  // !USE_VALUE
+                result = value_t("1");
+                for (i = value_t("2"); i <= sv; ++i) { result *= i; }
                 sv = result;
-#endif // !USE_VERYLONG
+#endif // USE_VALUE
                 t2 = time(nullptr);
                 std::cout << "Time=" << (t2 - t1) << std::endl;
                 break;
             case 's':
                 sv = value_t(d0);
                 if (token.value[1] == 'q') {
-#ifndef USE_VERYLONG
+#ifdef USE_VALUE
                     sv.sqrt();
-#else  // USE_VERYLONG
+#endif // USE_VALUE
+#ifdef USE_VERYLONG
                     sv = sqrt(sv);
-#endif // !USE_VERYLONG
+#endif // USE_VERYLONG
                 } else {
-#ifndef USE_VERYLONG
+#ifdef USE_VALUE
                     sv.sin();
-#else  // USE_VERYLONG
+#endif // USE_VALUE
+#ifdef USE_VERYLONG
                     sv = sin(sv);
-#endif // !USE_VERYLONG
+#endif // USE_VERYLONG
                 }
                 break;
             case 'c': sv = value_t(d0);
-#ifndef USE_VERYLONG
+#ifdef USE_VALUE
                 sv.cos();
-#else  // USE_VERYLONG
+#endif // USE_VALUE
+#ifdef USE_VERYLONG
                 sv = cos(sv);
-#endif // !USE_VERYLONG
+#endif // USE_VERYLONG
                 break;
             case 't': sv = value_t(d0);
-#ifndef USE_VERYLONG
+#ifdef USE_VALUE
                 sv.tan();
-#else  // USE_VERYLONG
+#endif // USE_VALUE
+#ifdef USE_VERYLONG
                 sv = tan(sv);
-#endif // !USE_VERYLONG
+#endif // USE_VERYLONG
                 break;
             }
             tmp_stack.push(Token(number, std::string(sv).c_str()));
