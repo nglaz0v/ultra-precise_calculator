@@ -1,5 +1,5 @@
-# calculator
-simple console calculator
+# ultra-precise calculator
+console calculator with controlled calculation precision
 
 ## Two types of project files
 
